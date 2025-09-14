@@ -12,9 +12,18 @@ const COPELLA_CREATOR_META_ACHIEVEMENTS = '_copella_creator_achievements';
 const COPELLA_CREATOR_META_SOCIAL = '_copella_creator_social';
 const COPELLA_CREATOR_META_PLAYLISTS = '_copella_creator_playlists';
 const COPELLA_CREATOR_META_BACKGROUND_IMAGE = '_copella_creator_background_image';
+const COPELLA_CREATOR_META_TOPICS_AUTHOR = '_copella_creator_topics_author';
 
 function copella_creator_add_meta_boxes(): void
 {
+    add_meta_box(
+        'copella_creator_topics_author',
+        __('Автор из Topics', 'copella-creators'),
+        'copella_creator_render_topics_author_meta_box',
+        'creator',
+        'side',
+        'high'
+    );
     add_meta_box(
         'copella_creator_details',
         __('Детали креатора', 'copella-creators'),
@@ -49,6 +58,56 @@ function copella_creator_add_meta_boxes(): void
     );
 }
 add_action('add_meta_boxes', 'copella_creator_add_meta_boxes');
+
+function copella_creator_render_topics_author_meta_box(WP_Post $post): void {
+    $topics_author_id = (int) get_post_meta($post->ID, COPELLA_CREATOR_META_TOPICS_AUTHOR, true);
+    
+    // Get available authors from topics plugin
+    $authors = get_posts(array(
+        'post_type' => 'topic_author',
+        'post_status' => array('publish', 'draft', 'private'),
+        'posts_per_page' => 500,
+        'orderby' => 'title',
+        'order' => 'ASC',
+        'no_found_rows' => true,
+    ));
+    ?>
+    <p>
+        <label for="copella_creator_topics_author"><strong><?php _e('Выберите автора из Topics', 'copella-creators'); ?></strong></label><br/>
+        <select id="copella_creator_topics_author" name="copella_creator_topics_author" class="widefat">
+            <option value="0"><?php _e('— Не выбрано —', 'copella-creators'); ?></option>
+            <?php foreach ($authors as $author): ?>
+                <option value="<?php echo (int) $author->ID; ?>" <?php selected($topics_author_id, $author->ID); ?>>
+                    <?php echo esc_html($author->post_title); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </p>
+    <p class="description">
+        <?php _e('Выберите автора из плагина Topics & Playlists. Это автоматически подтянет его данные, картинку и плейлисты.', 'copella-creators'); ?>
+    </p>
+    
+    <?php if ($topics_author_id > 0): ?>
+        <div style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 5px;">
+            <strong><?php _e('Предварительный просмотр:', 'copella-creators'); ?></strong><br/>
+            <?php 
+            $author_name = get_the_title($topics_author_id);
+            $author_thumb = get_the_post_thumbnail_url($topics_author_id, 'thumbnail');
+            $author_desc = get_post_field('post_excerpt', $topics_author_id);
+            ?>
+            <?php if ($author_thumb): ?>
+                <img src="<?php echo esc_url($author_thumb); ?>" width="40" height="40" style="border-radius: 50%; object-fit: cover; margin: 5px 0;" alt=""/>
+            <?php endif; ?>
+            <div style="margin-top: 5px;">
+                <strong><?php echo esc_html($author_name); ?></strong><br/>
+                <?php if ($author_desc): ?>
+                    <small><?php echo esc_html($author_desc); ?></small>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php
+}
 
 function copella_creator_render_meta_box(WP_Post $post): void {
     wp_nonce_field('copella_creator_meta', 'copella_creator_meta_nonce');
@@ -165,12 +224,6 @@ function copella_creator_render_playlists_meta_box(WP_Post $post): void {
         <input type="hidden" id="copella_creator_playlists" name="copella_creator_playlists" value="<?php echo esc_attr(implode(',', $selected)); ?>"/>
     </div>
     <p style="opacity:.8;margin:6px 0 0 0"><?php _e('Выберите плейлисты, которые будут отображаться на странице креатора.', 'copella-creators'); ?></p>
-    
-    <p style="margin-top: 20px;">
-        <label><strong><?php _e('Шорткод страницы креатора', 'copella-creators'); ?></strong></label><br/>
-        <input type="text" readonly class="widefat" value="[creator_page creator_id=&quot;<?php echo (int) $post->ID; ?>&quot;]" onclick="this.select();document.execCommand('copy');"/>
-        <p class="description"><?php _e('Скопируйте этот шорткод для вставки на любую страницу', 'copella-creators'); ?></p>
-    </p>
     <?php
 }
 
@@ -222,5 +275,10 @@ function copella_creator_save_meta_boxes(int $post_id): void {
     }
     $playlist_ids = array_values(array_unique(array_filter($playlist_ids)));
     update_post_meta($post_id, COPELLA_CREATOR_META_PLAYLISTS, implode(',', $playlist_ids));
+    
+    // Save topics author
+    if (isset($_POST['copella_creator_topics_author'])) {
+        update_post_meta($post_id, COPELLA_CREATOR_META_TOPICS_AUTHOR, absint((string) $_POST['copella_creator_topics_author']));
+    }
 }
 add_action('save_post_creator', 'copella_creator_save_meta_boxes');

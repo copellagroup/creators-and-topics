@@ -130,6 +130,31 @@ function copella_creators_render_creator_page($atts = array()): string {
     $social_raw = (string) get_post_meta($creator_id, COPELLA_CREATOR_META_SOCIAL, true);
     $background_image = (int) get_post_meta($creator_id, COPELLA_CREATOR_META_BACKGROUND_IMAGE, true);
     $playlists_raw = (string) get_post_meta($creator_id, COPELLA_CREATOR_META_PLAYLISTS, true);
+    $topics_author_id = (int) get_post_meta($creator_id, COPELLA_CREATOR_META_TOPICS_AUTHOR, true);
+    
+    // If topics author is selected, use their data
+    if ($topics_author_id > 0) {
+        $topics_author = get_post($topics_author_id);
+        if ($topics_author && $topics_author->post_type === 'topic_author') {
+            // Use topics author data if creator fields are empty
+            if (empty($name)) $name = get_the_title($topics_author_id);
+            if (empty($avatar)) $avatar = get_the_post_thumbnail_url($topics_author_id, 'large');
+            if (empty($excerpt)) $excerpt = get_post_field('post_excerpt', $topics_author_id);
+            if (empty($description)) $description = get_post_field('post_content', $topics_author_id);
+            
+            // Get topics author social networks
+            $topics_social_raw = (string) get_post_meta($topics_author_id, '_copella_author_social', true);
+            if (empty($social_raw) && !empty($topics_social_raw)) {
+                $social_raw = $topics_social_raw;
+            }
+            
+            // Get topics author playlists
+            $topics_playlists_raw = (string) get_post_meta($topics_author_id, '_copella_author_playlists', true);
+            if (empty($playlists_raw) && !empty($topics_playlists_raw)) {
+                $playlists_raw = $topics_playlists_raw;
+            }
+        }
+    }
 
     // Parse social networks
     $social_networks = array();
@@ -236,11 +261,23 @@ function copella_creators_render_creator_page($atts = array()): string {
             <?php if (!empty($achievements)): ?>
                 <section class="cp-creator-section cp-creator-achievements">
                     <h2 class="cp-section-title"><?php _e('Достижения', 'copella-creators'); ?></h2>
-                    <ul class="cp-achievements-list">
-                        <?php foreach ($achievements as $achievement): ?>
-                            <li class="cp-achievement-item"><?php echo esc_html($achievement); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
+                    <?php if (count($achievements) === 1): ?>
+                        <!-- Single achievement - display as highlighted card -->
+                        <div class="cp-single-achievement">
+                            <div class="cp-achievement-icon">🏆</div>
+                            <div class="cp-achievement-content">
+                                <h3 class="cp-achievement-title"><?php _e('Достижение', 'copella-creators'); ?></h3>
+                                <p class="cp-achievement-text"><?php echo esc_html($achievements[0]); ?></p>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <!-- Multiple achievements - display as list -->
+                        <ul class="cp-achievements-list">
+                            <?php foreach ($achievements as $achievement): ?>
+                                <li class="cp-achievement-item"><?php echo esc_html($achievement); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
                 </section>
             <?php endif; ?>
 
@@ -265,21 +302,10 @@ function copella_creators_render_creator_page($atts = array()): string {
                     <h2 class="cp-section-title"><?php _e('Плейлисты', 'copella-creators'); ?></h2>
                     <div class="cp-playlists-grid">
                         <?php foreach ($playlists as $playlist): ?>
-                            <div class="cp-playlist-item">
-                                <a href="<?php echo esc_url(get_permalink($playlist->ID)); ?>" class="cp-playlist-link">
-                                    <?php 
-                                    $thumb = get_the_post_thumbnail_url($playlist->ID, 'medium');
-                                    if ($thumb): 
-                                    ?>
-                                        <div class="cp-playlist-thumb">
-                                            <img src="<?php echo esc_url($thumb); ?>" alt="<?php echo esc_attr($playlist->post_title); ?>" loading="lazy"/>
-                                        </div>
-                                    <?php endif; ?>
-                                    <div class="cp-playlist-info">
-                                        <h3 class="cp-playlist-title"><?php echo esc_html($playlist->post_title); ?></h3>
-                                    </div>
-                                </a>
-                            </div>
+                            <?php 
+                            // Use Topics plugin shortcode for consistent design
+                            echo do_shortcode('[topic_playlist playlist_id="' . (int) $playlist->ID . '"]');
+                            ?>
                         <?php endforeach; ?>
                     </div>
                 </section>
@@ -409,6 +435,52 @@ function copella_creators_render_creator_page($atts = array()): string {
         border: 1px solid rgba(255, 255, 255, 0.1);
         font-size: 16px;
         line-height: 1.5;
+    }
+    
+    .cp-single-achievement {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 25px 30px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+    
+    .cp-achievement-icon {
+        font-size: 48px;
+        flex: 0 0 auto;
+        text-align: center;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .cp-achievement-content {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .cp-achievement-title {
+        margin: 0 0 8px 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: #fff;
+        font-family: 'Gilroy-Bold', 'Gilroy-SemiBold', system-ui, sans-serif;
+    }
+    
+    .cp-achievement-text {
+        margin: 0;
+        font-size: 18px;
+        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.9);
     }
     
     .cp-social-links {
@@ -555,6 +627,27 @@ function copella_creators_render_creator_page($atts = array()): string {
         
         .cp-social-link {
             justify-content: center;
+        }
+        
+        .cp-single-achievement {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .cp-achievement-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 36px;
+        }
+        
+        .cp-achievement-title {
+            font-size: 18px;
+        }
+        
+        .cp-achievement-text {
+            font-size: 16px;
         }
     }
     </style>
