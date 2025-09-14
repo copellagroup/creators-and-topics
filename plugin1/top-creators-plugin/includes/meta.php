@@ -71,16 +71,44 @@ function copella_creator_render_topics_author_meta_box(WP_Post $post): void {
         'order' => 'ASC',
         'no_found_rows' => true,
     ));
+    
+    // Separate authors by type
+    $video_authors = array();
+    $stream_authors = array();
+    
+    foreach ($authors as $author) {
+        $type = (string) get_post_meta($author->ID, '_copella_author_type', true);
+        if ($type === 'stream') {
+            $stream_authors[] = $author;
+        } else {
+            $video_authors[] = $author;
+        }
+    }
     ?>
     <p>
         <label for="copella_creator_topics_author"><strong><?php _e('Выберите автора из Topics', 'copella-creators'); ?></strong></label><br/>
         <select id="copella_creator_topics_author" name="copella_creator_topics_author" class="widefat">
             <option value="0"><?php _e('— Не выбрано —', 'copella-creators'); ?></option>
-            <?php foreach ($authors as $author): ?>
-                <option value="<?php echo (int) $author->ID; ?>" <?php selected($topics_author_id, $author->ID); ?>>
-                    <?php echo esc_html($author->post_title); ?>
-                </option>
-            <?php endforeach; ?>
+            
+            <?php if (!empty($video_authors)): ?>
+                <optgroup label="<?php _e('📹 Авторы видео', 'copella-creators'); ?>">
+                    <?php foreach ($video_authors as $author): ?>
+                        <option value="<?php echo (int) $author->ID; ?>" <?php selected($topics_author_id, $author->ID); ?>>
+                            <?php echo esc_html($author->post_title); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </optgroup>
+            <?php endif; ?>
+            
+            <?php if (!empty($stream_authors)): ?>
+                <optgroup label="<?php _e('🔴 Авторы стримов', 'copella-creators'); ?>">
+                    <?php foreach ($stream_authors as $author): ?>
+                        <option value="<?php echo (int) $author->ID; ?>" <?php selected($topics_author_id, $author->ID); ?>>
+                            <?php echo esc_html($author->post_title); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </optgroup>
+            <?php endif; ?>
         </select>
     </p>
     <p class="description">
@@ -88,21 +116,43 @@ function copella_creator_render_topics_author_meta_box(WP_Post $post): void {
     </p>
     
     <?php if ($topics_author_id > 0): ?>
-        <div style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 5px;">
+        <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px;">
             <strong><?php _e('Предварительный просмотр:', 'copella-creators'); ?></strong><br/>
             <?php 
             $author_name = get_the_title($topics_author_id);
             $author_thumb = get_the_post_thumbnail_url($topics_author_id, 'thumbnail');
             $author_desc = get_post_field('post_excerpt', $topics_author_id);
+            $author_type = (string) get_post_meta($topics_author_id, '_copella_author_type', true);
+            $author_social = (string) get_post_meta($topics_author_id, '_copella_author_social', true);
+            $author_playlists = (string) get_post_meta($topics_author_id, '_copella_author_playlists', true);
             ?>
-            <?php if ($author_thumb): ?>
-                <img src="<?php echo esc_url($author_thumb); ?>" width="40" height="40" style="border-radius: 50%; object-fit: cover; margin: 5px 0;" alt=""/>
-            <?php endif; ?>
-            <div style="margin-top: 5px;">
-                <strong><?php echo esc_html($author_name); ?></strong><br/>
-                <?php if ($author_desc): ?>
-                    <small><?php echo esc_html($author_desc); ?></small>
+            
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 10px;">
+                <?php if ($author_thumb): ?>
+                    <img src="<?php echo esc_url($author_thumb); ?>" width="50" height="50" style="border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" alt=""/>
                 <?php endif; ?>
+                <div>
+                    <div style="font-weight: 600; color: #333;">
+                        <?php echo esc_html($author_name); ?>
+                        <?php if ($author_type === 'stream'): ?>
+                            <span style="background: #dc3545; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-left: 5px;">🔴 СТРИМ</span>
+                        <?php else: ?>
+                            <span style="background: #28a745; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-left: 5px;">📹 ВИДЕО</span>
+                        <?php endif; ?>
+                    </div>
+                    <?php if ($author_desc): ?>
+                        <div style="font-size: 13px; color: #666; margin-top: 2px;"><?php echo esc_html($author_desc); ?></div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                <?php 
+                $social_count = !empty($author_social) ? count(array_filter(preg_split("/\r\n|\r|\n/", $author_social))) : 0;
+                $playlist_count = !empty($author_playlists) ? count(array_filter(explode(',', $author_playlists))) : 0;
+                ?>
+                <span style="margin-right: 15px;">📱 Соцсети: <?php echo $social_count; ?></span>
+                <span>🎵 Плейлисты: <?php echo $playlist_count; ?></span>
             </div>
         </div>
     <?php endif; ?>

@@ -153,6 +153,24 @@ function copella_creators_render_creator_page($atts = array()): string {
             if (empty($playlists_raw) && !empty($topics_playlists_raw)) {
                 $playlists_raw = $topics_playlists_raw;
             }
+            
+            // Get author type and additional info
+            $author_type = (string) get_post_meta($topics_author_id, '_copella_author_type', true);
+            $author_desc = (string) get_post_meta($topics_author_id, '_copella_author_desc', true);
+            
+            // Add type info to specialization if not set
+            if (empty($specialization)) {
+                if ($author_type === 'stream') {
+                    $specialization = __('Автор стримов', 'copella-creators');
+                } else {
+                    $specialization = __('Автор видео', 'copella-creators');
+                }
+            }
+            
+            // Use author description if excerpt is empty
+            if (empty($excerpt) && !empty($author_desc)) {
+                $excerpt = $author_desc;
+            }
         }
     }
 
@@ -308,6 +326,14 @@ function copella_creators_render_creator_page($atts = array()): string {
                             ?>
                         <?php endforeach; ?>
                     </div>
+                </section>
+            <?php endif; ?>
+            
+            <?php if ($topics_author_id > 0): ?>
+                <!-- Use Topics author page shortcode for consistent design -->
+                <section class="cp-creator-section cp-creator-topics-author">
+                    <h2 class="cp-section-title"><?php _e('Автор из Topics', 'copella-creators'); ?></h2>
+                    <?php echo do_shortcode('[topic_author author_id="' . (int) $topics_author_id . '"]'); ?>
                 </section>
             <?php endif; ?>
         </div>
