@@ -274,6 +274,17 @@ function copella_creator_render_playlists_meta_box(WP_Post $post): void {
         <input type="hidden" id="copella_creator_playlists" name="copella_creator_playlists" value="<?php echo esc_attr(implode(',', $selected)); ?>"/>
     </div>
     <p style="opacity:.8;margin:6px 0 0 0"><?php _e('Выберите плейлисты, которые будут отображаться на странице креатора.', 'copella-creators'); ?></p>
+    
+    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px;">
+        <h4 style="margin: 0 0 10px 0; color: #333;"><?php _e('Шорткод страницы креатора', 'copella-creators'); ?></h4>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <input type="text" readonly class="widefat" value="[creator_page creator_id=&quot;<?php echo (int) $post->ID; ?>&quot;]" onclick="this.select();document.execCommand('copy');" style="font-family: monospace; background: #fff; border: 1px solid #ddd; padding: 8px; border-radius: 4px;"/>
+            <button type="button" class="button" onclick="navigator.clipboard.writeText('[creator_page creator_id=&quot;<?php echo (int) $post->ID; ?>&quot;]'); this.textContent='<?php _e('Скопировано!', 'copella-creators'); ?>'; setTimeout(() => this.textContent='<?php _e('Копировать', 'copella-creators'); ?>', 2000);"><?php _e('Копировать', 'copella-creators'); ?></button>
+        </div>
+        <p class="description" style="margin: 8px 0 0 0; font-size: 13px; color: #666;">
+            <?php _e('Скопируйте этот шорткод для вставки на любую страницу', 'copella-creators'); ?>
+        </p>
+    </div>
     <?php
 }
 
