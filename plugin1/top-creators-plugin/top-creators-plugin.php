@@ -33,6 +33,52 @@ register_activation_hook(__FILE__, function (): void {
     if (!get_option(COPELLA_CREATORS_OPTION)) {
         add_option(COPELLA_CREATORS_OPTION, copella_creators_default_options());
     }
+    
+    // Register post type on activation
+    $labels = array(
+        'name'               => __('Креаторы', 'copella-creators'),
+        'singular_name'      => __('Креатор', 'copella-creators'),
+        'menu_name'          => __('Креаторы', 'copella-creators'),
+        'add_new'            => __('Добавить креатора', 'copella-creators'),
+        'add_new_item'       => __('Добавить нового креатора', 'copella-creators'),
+        'new_item'           => __('Новый креатор', 'copella-creators'),
+        'edit_item'          => __('Редактировать креатора', 'copella-creators'),
+        'view_item'          => __('Просмотреть креатора', 'copella-creators'),
+        'all_items'          => __('Все креаторы', 'copella-creators'),
+        'search_items'       => __('Искать креаторов', 'copella-creators'),
+        'not_found'          => __('Креаторов не найдено.', 'copella-creators'),
+        'not_found_in_trash' => __('В корзине креаторов не найдено.', 'copella-creators'),
+    );
+
+    register_post_type('creator', array(
+        'labels' => $labels,
+        'public' => true,
+        'publicly_queryable' => true,
+        'show_ui' => true,
+        'show_in_menu' => false,
+        'show_in_nav_menus' => true,
+        'show_in_admin_bar' => true,
+        'show_in_rest' => true,
+        'has_archive' => true,
+        'rewrite' => array(
+            'slug' => 'creators',
+            'with_front' => false,
+            'pages' => true,
+            'feeds' => true
+        ),
+        'query_var' => true,
+        'menu_icon' => 'dashicons-groups',
+        'supports' => array('title', 'thumbnail', 'editor', 'excerpt', 'custom-fields'),
+        'capability_type' => 'post',
+        'hierarchical' => false,
+        'menu_position' => null,
+    ));
+    
+    flush_rewrite_rules();
+});
+
+register_deactivation_hook(__FILE__, function (): void {
+    flush_rewrite_rules();
 });
 
 add_action('admin_menu', function (): void {
@@ -166,14 +212,27 @@ add_action('init', function(): void {
     register_post_type('creator', array(
         'labels' => $labels,
         'public' => true,
-        'has_archive' => true,
-        'rewrite' => array('slug' => 'creators'),
-        'menu_icon' => 'dashicons-groups',
-        'supports' => array('title', 'thumbnail', 'editor', 'excerpt'),
+        'publicly_queryable' => true,
+        'show_ui' => true,
+        'show_in_menu' => false,
+        'show_in_nav_menus' => true,
+        'show_in_admin_bar' => true,
         'show_in_rest' => true,
-        'show_in_menu' => false, // We'll add it to our custom menu
+        'has_archive' => true,
+        'rewrite' => array(
+            'slug' => 'creators',
+            'with_front' => false,
+            'pages' => true,
+            'feeds' => true
+        ),
+        'query_var' => true,
+        'menu_icon' => 'dashicons-groups',
+        'supports' => array('title', 'thumbnail', 'editor', 'excerpt', 'custom-fields'),
+        'capability_type' => 'post',
+        'hierarchical' => false,
+        'menu_position' => null,
     ));
-});
+}, 0);
 
 // Add Creator meta boxes
 add_action('add_meta_boxes', function(): void {
@@ -415,12 +474,28 @@ add_action('admin_menu', function(): void {
         'manage_options',
         'post-new.php?post_type=creator'
     );
+    
+    // Add flush rewrite rules option
+    add_submenu_page(
+        'copella-creators',
+        __('Обновить URL', 'copella-creators'),
+        __('Обновить URL', 'copella-creators'),
+        'manage_options',
+        'copella-creators-flush',
+        function() {
+            if (isset($_GET['flush']) && $_GET['flush'] === '1') {
+                flush_rewrite_rules();
+                echo '<div class="notice notice-success"><p>' . __('Правила перезаписи URL обновлены!', 'copella-creators') . '</p></div>';
+            }
+            echo '<div class="wrap">';
+            echo '<h1>' . __('Обновление URL', 'copella-creators') . '</h1>';
+            echo '<p>' . __('Если страницы креаторов не открываются, нажмите кнопку ниже для обновления правил URL:', 'copella-creators') . '</p>';
+            echo '<a href="' . admin_url('admin.php?page=copella-creators-flush&flush=1') . '" class="button button-primary">' . __('Обновить правила URL', 'copella-creators') . '</a>';
+            echo '</div>';
+        }
+    );
 });
 
-// Flush rewrite rules on activation
-register_activation_hook(__FILE__, function(): void {
-    flush_rewrite_rules();
-});
 
 // Add custom template for creator pages
 add_filter('template_include', function($template) {
@@ -437,6 +512,32 @@ add_filter('template_include', function($template) {
         }
     }
     return $template;
+});
+
+// Debug function to check creator posts
+add_action('wp_footer', function() {
+    if (current_user_can('manage_options') && isset($_GET['debug_creators'])) {
+        $creators = get_posts(array(
+            'post_type' => 'creator',
+            'post_status' => array('publish', 'draft', 'private'),
+            'posts_per_page' => -1,
+            'no_found_rows' => true,
+        ));
+        
+        echo '<div style="position: fixed; top: 0; left: 0; background: #000; color: #fff; padding: 20px; z-index: 9999; max-width: 500px; font-size: 12px;">';
+        echo '<h3>Debug: Creator Posts</h3>';
+        echo '<p>Found ' . count($creators) . ' creator posts:</p>';
+        foreach ($creators as $creator) {
+            echo '<div style="margin: 10px 0; padding: 10px; background: #333;">';
+            echo '<strong>ID:</strong> ' . $creator->ID . '<br>';
+            echo '<strong>Title:</strong> ' . $creator->post_title . '<br>';
+            echo '<strong>Status:</strong> ' . $creator->post_status . '<br>';
+            echo '<strong>Slug:</strong> ' . $creator->post_name . '<br>';
+            echo '<strong>URL:</strong> ' . get_permalink($creator->ID) . '<br>';
+            echo '</div>';
+        }
+        echo '</div>';
+    }
 });
 
 // Add body class for creator pages
