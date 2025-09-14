@@ -171,12 +171,20 @@ function copella_creators_integration_page(): void {
         
         <h2><?php _e('Полезные шорткоды', 'copella-creators'); ?></h2>
         <div class="shortcode-help" style="background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
-            <h3><?php _e('Основные шорткоды', 'copella-creators'); ?></h3>
+            <h3><?php _e('Полноценные страницы', 'copella-creators'); ?></h3>
             <ul style="list-style: none; padding: 0;">
                 <li style="margin-bottom: 10px;">
-                    <code style="background: #fff; padding: 4px 8px; border-radius: 4px; font-family: monospace;">[creator_page id="123"]</code>
-                    <span style="margin-left: 10px; color: #666;"><?php _e('Полная страница креатора', 'copella-creators'); ?></span>
+                    <strong><?php _e('Страница креатора:', 'copella-creators'); ?></strong>
+                    <span style="margin-left: 10px; color: #666;"><?php _e('Автоматически создается при публикации креатора', 'copella-creators'); ?></span>
                 </li>
+                <li style="margin-bottom: 10px;">
+                    <strong><?php _e('Архив креаторов:', 'copella-creators'); ?></strong>
+                    <span style="margin-left: 10px; color: #666;"><?php _e('Список всех креаторов по адресу /creators/', 'copella-creators'); ?></span>
+                </li>
+            </ul>
+            
+            <h3><?php _e('Шорткоды', 'copella-creators'); ?></h3>
+            <ul style="list-style: none; padding: 0;">
                 <li style="margin-bottom: 10px;">
                     <code style="background: #fff; padding: 4px 8px; border-radius: 4px; font-family: monospace;">[creator_card id="123"]</code>
                     <span style="margin-left: 10px; color: #666;"><?php _e('Карточка креатора с кнопкой копирования', 'copella-creators'); ?></span>
@@ -281,10 +289,11 @@ function copella_creator_shortcodes_meta_box(WP_Post $post): void {
         <p><strong><?php _e('Основные шорткоды:', 'copella-creators'); ?></strong></p>
         
         <div style="margin-bottom: 15px;">
-            <label><?php _e('Полная страница:', 'copella-creators'); ?></label>
-            <input type="text" readonly value='[creator_page id="<?php echo $creator_id; ?>"]' 
+            <label><?php _e('Полноценная страница:', 'copella-creators'); ?></label>
+            <input type="text" readonly value="<?php echo esc_url(get_permalink($creator_id)); ?>" 
                    style="width: 100%; margin-top: 5px; font-family: monospace; font-size: 12px;" 
                    onclick="this.select();" />
+            <small style="color: #666;"><?php _e('Автоматически создается при публикации', 'copella-creators'); ?></small>
         </div>
         
         <div style="margin-bottom: 15px;">

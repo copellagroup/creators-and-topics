@@ -9,8 +9,9 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Шорткод для отображения полной страницы креатора
- * [creator_page id="123"] или [creator_page slug="creator-slug"]
+ * Шорткод для отображения полной страницы креатора (устарел)
+ * Теперь используется полноценный шаблон single-creator.php
+ * Оставляем для обратной совместимости
  */
 add_shortcode('creator_page', function($atts): string {
     $a = shortcode_atts([
@@ -36,6 +37,12 @@ add_shortcode('creator_page', function($atts): string {
     
     if ($creator_id <= 0) {
         return '<p>' . __('Креатор не найден', 'copella-creators') . '</p>';
+    }
+
+    // Перенаправляем на полноценную страницу креатора
+    $creator_url = get_permalink($creator_id);
+    if ($creator_url) {
+        return '<p><a href="' . esc_url($creator_url) . '" class="button">' . __('Перейти к странице креатора', 'copella-creators') . '</a></p>';
     }
 
     return copella_render_creator_page($creator_id, $a);
@@ -596,13 +603,6 @@ add_filter('template_include', function($template) {
             return $custom_template;
         }
     }
-    return $template;
-});
-
-/**
- * Добавление поддержки архива креаторов
- */
-add_filter('template_include', function($template) {
     if (is_post_type_archive('creator')) {
         $custom_template = COPELLA_CREATORS_DIR . 'templates/archive-creator.php';
         if (file_exists($custom_template)) {
