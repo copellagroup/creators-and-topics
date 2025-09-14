@@ -112,6 +112,66 @@ function copella_topics_register_cpt(): void
     ));
 
     // Removed legacy author_category taxonomy registration
+
+    // Creators CPT
+    $creator_labels = array(
+        'name'               => __('Креаторы', 'copella-topics'),
+        'singular_name'      => __('Креатор', 'copella-topics'),
+        'menu_name'          => __('Креаторы', 'copella-topics'),
+        'name_admin_bar'     => __('Креатор', 'copella-topics'),
+        'add_new'            => __('Добавить креатора', 'copella-topics'),
+        'add_new_item'       => __('Добавить нового креатора', 'copella-topics'),
+        'new_item'           => __('Новый креатор', 'copella-topics'),
+        'edit_item'          => __('Редактировать креатора', 'copella-topics'),
+        'view_item'          => __('Просмотреть креатора', 'copella-topics'),
+        'all_items'          => __('Все креаторы', 'copella-topics'),
+        'search_items'       => __('Искать креаторов', 'copella-topics'),
+        'parent_item_colon'  => __('Родительские креаторы:', 'copella-topics'),
+        'not_found'          => __('Креаторов не найдено.', 'copella-topics'),
+        'not_found_in_trash' => __('В корзине креаторов не найдено.', 'copella-topics'),
+    );
+
+    register_post_type('creator', array(
+        'labels' => $creator_labels,
+        'public' => true,
+        'has_archive' => true,
+        'rewrite' => array('slug' => 'creators'),
+        'menu_icon' => 'dashicons-groups',
+        'supports' => array('title', 'thumbnail', 'editor', 'excerpt'),
+        'show_in_rest' => true,
+        'show_in_menu' => true,
+        'menu_position' => 26, // После авторов
+        'capability_type' => 'post',
+        'hierarchical' => false,
+        'publicly_queryable' => true,
+        'query_var' => true,
+        'can_export' => true,
+    ));
+
+    // Creator categories taxonomy
+    $creator_cat_labels = array(
+        'name'              => __('Категории креаторов', 'copella-topics'),
+        'singular_name'     => __('Категория креатора', 'copella-topics'),
+        'menu_name'         => __('Категории креаторов', 'copella-topics'),
+        'search_items'      => __('Поиск категорий', 'copella-topics'),
+        'all_items'         => __('Все категории', 'copella-topics'),
+        'parent_item'       => __('Родительская категория', 'copella-topics'),
+        'parent_item_colon' => __('Родительская категория:', 'copella-topics'),
+        'edit_item'         => __('Редактировать категорию', 'copella-topics'),
+        'update_item'       => __('Обновить категорию', 'copella-topics'),
+        'add_new_item'      => __('Добавить новую категорию', 'copella-topics'),
+        'new_item_name'     => __('Название новой категории', 'copella-topics'),
+    );
+    
+    register_taxonomy('creator_category', 'creator', array(
+        'hierarchical'      => true,
+        'labels'            => $creator_cat_labels,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'query_var'         => true,
+        'show_in_rest'      => true,
+        'rewrite'           => array('slug' => 'creator-category'),
+    ));
 }
 
 add_action('init', 'copella_topics_register_cpt');

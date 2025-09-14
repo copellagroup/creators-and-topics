@@ -1,10 +1,15 @@
 <?php
 /**
  * Plugin Name: Copella Topics & Playlists
- * Description: Создаёт тип записей «Темы/Плейлисты» и шорткоды для вывода блока «Горячие темы» с пагинацией.
- * Version: 0.1.0
+ * Description: Расширенная система тем, плейлистов, авторов и креаторов. Включает Custom Post Types, социальные сети, достижения, привязку плейлистов и проектов. Единый стиль с размытым фоном аватарки.
+ * Version: 1.0.0 (Enhanced)
  * Author: Copella
  * Text Domain: copella-topics
+ * Requires at least: 5.0
+ * Tested up to: 6.4
+ * Requires PHP: 7.4
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if (!defined('ABSPATH')) {
@@ -35,6 +40,10 @@ require_once COPELLA_TOPICS_PLUGIN_DIR . 'includes/author-page.php';
 require_once COPELLA_TOPICS_PLUGIN_DIR . 'includes/admin.php';
 require_once COPELLA_TOPICS_PLUGIN_DIR . 'includes/search.php';
 
+// Creators functionality
+require_once COPELLA_TOPICS_PLUGIN_DIR . 'includes/creator-meta.php';
+require_once COPELLA_TOPICS_PLUGIN_DIR . 'includes/creator-shortcodes.php';
+
 // Assets loader (frontend) – loaded only when shortcode is present
 function copella_topics_enqueue_assets(): void
 {
@@ -48,7 +57,7 @@ function copella_topics_enqueue_assets(): void
     $post = get_post();
     
     if ($post && isset($post->post_content)) {
-        $shortcodes = ['hot_topics', 'topic_playlist', 'playlist_authors', 'playlist_author', 'video_authors', 'stream_authors', 'cpplayer_stream', 'tp_search'];
+        $shortcodes = ['hot_topics', 'topic_playlist', 'playlist_authors', 'playlist_author', 'video_authors', 'stream_authors', 'cpplayer_stream', 'tp_search', 'creator_card', 'creators_list'];
         foreach ($shortcodes as $shortcode) {
             if (has_shortcode($post->post_content, $shortcode)) {
                 $should_enqueue = true;
