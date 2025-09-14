@@ -1,10 +1,15 @@
 <?php
 /**
  * Plugin Name: Copella Top Creators
- * Description: Компонент «Лучшие креаторы» в едином стиле сайта.
- * Version: 1.0.0 (Stable)
+ * Description: Расширенная система страниц креаторов с интеграцией с Topics Plugin. Включает Custom Post Type для креаторов, социальные сети, достижения, привязку плейлистов и проектов. Единый стиль с размытым фоном аватарки.
+ * Version: 2.0.0 (Enhanced)
  * Author: Copella
  * Text Domain: copella-creators
+ * Requires at least: 5.0
+ * Tested up to: 6.4
+ * Requires PHP: 7.4
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if (!defined('ABSPATH')) {
@@ -33,6 +38,11 @@ register_activation_hook(__FILE__, function (): void {
     if (!get_option(COPELLA_CREATORS_OPTION)) {
         add_option(COPELLA_CREATORS_OPTION, copella_creators_default_options());
     }
+    
+    // Регистрируем Custom Post Type при активации
+    require_once COPELLA_CREATORS_DIR . 'includes/creator-cpt.php';
+    copella_creators_register_cpt();
+    flush_rewrite_rules();
 });
 
 add_action('admin_menu', function (): void {
@@ -143,6 +153,13 @@ function copella_creators_register_assets(): void {
     wp_register_style('copella-top-creators', COPELLA_CREATORS_URL . 'assets/css/top-creators.css', array(), file_exists($css_file) ? (string) filemtime($css_file) : '1.0.0');
 }
 add_action('wp_enqueue_scripts', 'copella_creators_register_assets');
+
+// Includes для расширенной функциональности
+require_once COPELLA_CREATORS_DIR . 'includes/creator-cpt.php';
+require_once COPELLA_CREATORS_DIR . 'includes/creator-template.php';
+require_once COPELLA_CREATORS_DIR . 'includes/creator-shortcode.php';
+require_once COPELLA_CREATORS_DIR . 'includes/creator-integration.php';
+require_once COPELLA_CREATORS_DIR . 'includes/creator-admin.php';
 
 // --- ФИНАЛЬНАЯ ФУНКЦИЯ ШОРТКОДА ---
 
