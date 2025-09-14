@@ -1,0 +1,1934 @@
+@font-face{
+  font-family:'Gilroy-SemiBold';
+  src:url('https://copella.live/assets/fonts/Gilroy-SemiBold.woff') format('woff');
+  font-weight:600;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Gilroy-Bold';
+  src:url('https://copella.live/assets/fonts/Gilroy-Bold.woff') format('woff');
+  font-weight:700;
+  font-style:normal;
+  font-display:swap;
+}
+
+.copella-ht{
+  color:#fff;
+  background:var(--ht-container-bg, #171717);
+  border-radius:var(--ht-container-radius, 32px);
+  padding:20px 24px 26px 24px;
+  font-family:'Gilroy-SemiBold',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+}
+.copella-ht .ht-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.copella-ht .ht-titlebar{display:flex;align-items:center;gap:10px}
+.copella-ht .ht-nav{background:transparent;border:0;color:#fff;opacity:.9;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;transition:background .2s ease,opacity .2s ease}
+.copella-ht .ht-nav:hover{background:rgba(255,255,255,.06);opacity:1}
+.copella-ht .ht-nav:disabled{opacity:0.25;pointer-events:none;background:transparent}
+.copella-ht:not(.has-scroll) .ht-nav{display:none}
+.copella-ht .ht-title{margin:0;font-size:22px;font-weight:700;font-family:'Gilroy-Bold','Gilroy-SemiBold',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+.copella-ht .ht-count{opacity:.9;font-size:14px;background:rgba(255,255,255,.06);padding:6px 10px;border-radius:10px}
+
+.copella-ht .ht-viewport{overflow:hidden}
+.copella-ht .ht-track{display:flex;gap:var(--ht-gap,28px);overflow-x:auto;padding:10px 2px 6px 2px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+/* Flex gap fallback for legacy Edge */
+@supports not (gap: 1rem) {
+  .copella-ht .ht-track{margin-left:-28px}
+  .copella-ht .ht-track > *{margin-left:28px}
+}
+.copella-ht .ht-track::-webkit-scrollbar{display:none;height:0}
+.copella-ht .ht-track{scrollbar-width:none}
+.copella-ht .ht-card{flex:0 0 auto;width:calc((100% - 56px) / 3);/* fallback for browsers without CSS variables */width:calc((100% - (var(--ht-gap,28px) * 2)) / 3);min-width:120px;scroll-snap-align:start;color:inherit;text-decoration:none}
+.copella-ht.is-staggered .ht-card:nth-child(even){margin-top:var(--ht-stagger,56px)}
+.copella-ht .ht-card{color:inherit;text-decoration:none}
+.copella-ht .ht-thumb{display:block;width:100%;aspect-ratio:var(--ht-aspect-ratio,1/1);border-radius:var(--ht-card-radius,28px);overflow:hidden;background:var(--ht-card-placeholder,#FF653A);position:relative}
+
+/* Scheduled topic premiere styles */
+.copella-ht .ht-scheduled {
+  cursor: default;
+  pointer-events: none;
+}
+.copella-ht .ht-scheduled .ht-thumb img {
+  filter: brightness(0.4) saturate(0.6);
+}
+.copella-ht .ht-premiere-banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(2px);
+  border-radius: var(--ht-card-radius, 28px) var(--ht-card-radius, 28px) 0 0;
+  padding: 12px 16px;
+  z-index: 2;
+}
+.copella-ht .ht-premiere-timer {
+  text-align: center;
+  color: #ffffff;
+  font-family: 'Gilroy-SemiBold', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+.copella-ht .ht-premiere-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.copella-ht .ht-premiere-time {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.3px;
+}
+@supports not (aspect-ratio: 1 / 1) {
+  .copella-ht .ht-thumb{padding-top:100%}
+  .copella-ht .ht-thumb img{position:absolute;top:0;right:0;bottom:0;left:0}
+}
+.copella-ht .ht-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.copella-ht .ht-card-title{display:block;margin-top:10px;font-size:14px;color:rgba(255,255,255,.92)}
+
+.copella-ht .ht-pagination{display:flex;gap:10px;justify-content:center;margin-top:18px}
+.copella-ht .ht-pagination a{color:#fff;text-decoration:none;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.06)}
+.copella-ht .ht-pagination a.is-active{background:#fff;color:#000}
+
+@media (min-width: 1024px){
+  .copella-ht .ht-card{width:calc((100% - 112px) / 5);/* fallback */width:calc((100% - (var(--ht-gap,28px) * 4)) / 5)}
+}
+
+@media (max-width: 640px){
+  .copella-ht{margin-left:12px;margin-right:12px;border-radius:20px;padding:16px}
+  .copella-ht .ht-card{width:calc((100% - 40px) / 3);/* fallback */width:calc((100% - (var(--ht-gap,20px) * 2)) / 3);min-width:100px}
+  
+  /* Mobile premiere banner adjustments */
+  .copella-ht .ht-premiere-banner {
+    padding: 10px 12px;
+  }
+  .copella-ht .ht-premiere-label {
+    font-size: 10px;
+    margin-bottom: 3px;
+  }
+  .copella-ht .ht-premiere-time {
+    font-size: 20px;
+  }
+}
+@supports not (gap: 1rem) {
+  @media (max-width: 640px){
+    .copella-ht .ht-track{margin-left:-20px}
+    .copella-ht .ht-track > *{margin-left:20px}
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 641px){
+  .copella-ht{margin-left:16px;margin-right:16px;border-radius:24px}
+}
+
+/* Simple Topic Playlists - Clean design */
+.copella-playlist{
+  background: var(--pl-container-bg, #171717);
+  color: #fff;
+  border-radius: var(--pl-container-radius, 28px);
+  padding: 20px 24px;
+  font-family: 'Gilroy-SemiBold', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 24px;
+}
+
+.copella-playlist * {
+  box-sizing: border-box;
+}
+
+/* Simple header styling */
+.copella-playlist > .pl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0 0 16px 0;
+}
+
+.copella-playlist .pl-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'Gilroy-Bold', 'Gilroy-SemiBold', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  color: #fff;
+  line-height: 1.25;
+  letter-spacing: 0.005em;
+}
+
+/* Simple arrow */
+.copella-playlist .pl-arrow {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: #fff;
+  opacity: .9;
+  transition: background .2s ease, opacity .2s ease;
+  line-height: 0;
+  background: transparent;
+  border: 0;
+}
+
+.copella-playlist .pl-arrow:hover {
+  background: rgba(255,255,255,.06);
+  opacity: 1;
+}
+
+.copella-playlist .pl-arrow svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  transition: transform .3s ease;
+  transform-origin: 50% 50%;
+}
+
+.copella-playlist.is-collapsed .pl-arrow svg {
+  transform: rotate(180deg);
+}
+
+.copella-playlist:not(.is-collapsed) .pl-arrow svg {
+  transform: rotate(0deg);
+}
+
+/* Simple playlist items */
+.copella-playlist .pl-item {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 10px;
+  padding: 10px;
+  transition: background .2s ease;
+}
+
+.copella-playlist .pl-item:hover {
+  background: rgba(255,255,255,.06);
+}
+
+.copella-playlist .pl-item:focus-visible {
+  outline: 2px solid rgba(255,255,255,.4);
+  outline-offset: 2px;
+}
+
+/* Simple thumbnails */
+.copella-playlist .pl-thumb {
+  width: 60px;
+  flex: 0 0 auto;
+  aspect-ratio: var(--pl-aspect, 1/1);
+  border-radius: 8px;
+  background: var(--pl-card-placeholder, #FF653A);
+  overflow: hidden;
+  position: relative;
+}
+
+@supports not (aspect-ratio: 1 / 1) {
+  .copella-playlist .pl-thumb {
+    padding-top: 100%;
+  }
+  .copella-playlist .pl-thumb img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.copella-playlist .pl-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Simple item content */
+.copella-playlist .pl-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.copella-playlist .pl-item-title {
+  display: block;
+  font-size: 14px;
+  line-height: 1.35;
+  color: rgba(255,255,255,.94);
+  font-family: 'Gilroy-SemiBold', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+
+.copella-playlist .pl-item-meta {
+  font-size: 12px;
+  color: rgba(255,255,255,.68);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+/* Simple badges */
+.copella-playlist .pl-item-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: #FF653A;
+  color: #fff;
+  font-weight: 600;
+  align-self: flex-start;
+  min-height: 20px;
+}
+
+/* Simple tabs styling */
+.copella-playlist .pl-tabsbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 18px 0;
+}
+
+.copella-playlist .pl-tabs-nav {
+  background: transparent;
+  border: 0;
+  color: #fff;
+  opacity: .9;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  transition: background .2s ease, opacity .2s ease;
+}
+
+.copella-playlist .pl-tabs-nav:hover {
+  background: rgba(255,255,255,.06);
+  opacity: 1;
+}
+
+.copella-playlist .pl-tabs-nav:disabled {
+  opacity: .25;
+  pointer-events: none;
+  background: transparent;
+}
+
+.copella-playlist .pl-tab {
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  opacity: .9;
+  transition: background .2s ease, opacity .2s ease;
+  flex: 0 0 auto;
+  font-weight: 600;
+}
+
+.copella-playlist .pl-tab:hover {
+  opacity: 1;
+  background: rgba(255,255,255,.1);
+}
+
+.copella-playlist .pl-tab.is-active {
+  background: #fff;
+  color: #000;
+  opacity: 1;
+}
+
+/* Simple collapse behavior */
+.copella-playlist.is-collapsed .pl-panels {
+  display: none;
+}
+
+.copella-playlist .pl-panels > .pl-list:not(.is-grid) {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.copella-playlist .pl-panels > .pl-list.is-grid {
+  grid-template-columns: repeat(auto-fit, minmax(var(--pl-grid-min, 240px), 1fr));
+  gap: 16px;
+  grid-auto-flow: row dense;
+  align-items: stretch;
+  width: 100%;
+}
+
+.copella-playlist .pl-panels > .pl-list.is-grid .pl-item {
+  height: 100%;
+  background: rgba(255,255,255,.04);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+/* Simple empty state */
+.copella-playlist .pl-empty {
+  padding: 20px 0;
+  color: rgba(255,255,255,.7);
+  font-size: 14px;
+  text-align: center;
+  font-style: italic;
+}
+/* Cover functionality preserved from original */
+.copella-playlist.has-cover{padding:0;overflow:hidden}
+.copella-playlist .pl-cover{position:relative;display:grid;align-items:stretch;min-height:var(--pl-cover-height,320px);border-top-left-radius:var(--pl-container-radius,28px);border-top-right-radius:var(--pl-container-radius,28px);overflow:hidden}
+.copella-playlist .pl-cover-media{position:absolute;inset:0;top:0;right:0;bottom:0;left:0}
+.copella-playlist .pl-cover-media img{width:100%;height:100%;object-fit:cover;display:block}
+.copella-playlist .pl-cover-overlay{position:absolute;inset:0;top:0;right:0;bottom:0;left:0;background:linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.0) 100%)}
+.copella-playlist .pl-cover--right .pl-cover-overlay{background:linear-gradient(270deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.0) 100%)}
+.copella-playlist .pl-cover-content{position:relative;z-index:1;display:flex;flex-direction:column;gap:10px;padding:24px;min-height:var(--pl-cover-height,320px)}
+.copella-playlist .pl-cover--right .pl-cover-content{align-items:flex-end;text-align:right}
+.copella-playlist .pl-cover-title{margin:0;font-size:22px;line-height:1.2;font-weight:700;font-family:'Gilroy-Bold','Gilroy-SemiBold',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;text-shadow:0 2px 10px rgba(0,0,0,.3)}
+.copella-playlist .pl-cover-desc{margin:0;font-size:14px;line-height:1.45;max-width:600px;color:rgba(255,255,255,.9);text-shadow:0 2px 6px rgba(0,0,0,.25)}
+.copella-playlist .pl-cover[data-empty-cover="1"] .pl-cover-overlay{background:linear-gradient(90deg, rgba(23,23,23,1) 0%, rgba(23,23,23,1) 100%)}
+.copella-playlist .pl-cover--right[data-empty-cover="1"] .pl-cover-overlay{background:linear-gradient(270deg, rgba(23,23,23,1) 0%, rgba(23,23,23,1) 100%)}
+.copella-playlist.has-cover > .pl-header{padding:16px 24px;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+.copella-playlist.has-cover:not(.is-collapsed) .pl-cover{display:none}
+.copella-playlist.has-cover > .pl-panels{padding:16px 24px 20px}
+/* Improved mobile responsive adjustments */
+@media (max-width: 640px) {
+  .copella-playlist {
+    margin-left: 12px;
+    margin-right: 12px;
+    border-radius: 20px;
+    padding: 16px;
+  }
+  
+  .copella-playlist .pl-cover-title {
+    font-size: 18px;
+  }
+  
+  .copella-playlist .pl-cover-desc {
+    font-size: 13px;
+  }
+  
+  .copella-playlist .pl-cover-content {
+    padding: 14px;
+  }
+  
+  .copella-playlist .pl-thumb {
+    width: 48px;
+  }
+  
+  .copella-playlist .pl-item {
+    padding: 8px;
+    gap: 10px;
+  }
+  
+  .copella-playlist .pl-item-title {
+    font-size: 13px;
+  }
+  
+  .copella-playlist .pl-title {
+    font-size: 20px;
+  }
+  
+  .copella-playlist .pl-arrow {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .copella-playlist .pl-tabsbar {
+    gap: 8px;
+    margin: 12px 0 14px 0;
+  }
+  
+  .copella-playlist .pl-tab {
+    padding: 6px 8px;
+    font-size: 12px;
+    min-width: 0;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .copella-playlist .pl-tabs-nav {
+    width: 30px;
+    height: 30px;
+    opacity: .8;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 641px) {
+  .copella-playlist {
+    margin-left: 16px;
+    margin-right: 16px;
+    border-radius: 24px;
+  }
+  
+  .copella-playlist .pl-thumb {
+    width: 52px;
+  }
+  
+  .copella-playlist .pl-item-title {
+    font-size: 14px;
+  }
+}
+
+/* Simple tab and panel management */
+.copella-playlist .pl-tabs-viewport {
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+
+.copella-playlist .pl-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 2px;
+  scrollbar-width: none;
+}
+
+.copella-playlist .pl-tabs::-webkit-scrollbar {
+  display: none;
+  height: 0;
+}
+
+.copella-playlist .pl-tabsbar:not(.has-scroll) .pl-tabs-nav {
+  opacity: .4;
+}
+
+/* Hide category tabs bar when the playlist is collapsed */
+.copella-playlist.is-collapsed .pl-tabsbar {
+  display: none;
+}
+
+.copella-playlist .pl-panels {
+  position: relative;
+  min-width: 0;
+}
+
+.copella-playlist .pl-panels > .pl-list {
+  display: none !important;
+}
+
+.copella-playlist .pl-panels > .pl-list.is-active:not(.is-grid) {
+  display: flex !important;
+}
+
+/* Show only the active grid panel */
+.copella-playlist .pl-panels > .pl-list.is-grid.is-active {
+  display: grid !important;
+}
+
+.copella-playlist .pl-panels > .pl-list {
+  min-width: 0;
+}
+
+/* Layout alignment and spacing */
+.copella-playlist {
+  align-self: flex-start;
+  break-inside: avoid;
+}
+
+.copella-playlist.is-collapsed {
+  align-self: flex-start;
+}
+
+@supports not (gap: 1rem) {
+  .copella-playlist .pl-panels > .pl-list:not(.is-grid) > * {
+    margin-top: 18px;
+  }
+  .copella-playlist .pl-panels > .pl-list:not(.is-grid) > *:first-child {
+    margin-top: 0;
+  }
+}
+
+/* Improved masonry layout with better responsive behavior */
+.cp-masonry{column-gap:24px}
+@media (min-width:1280px){.cp-masonry{column-count:2}}
+@media (max-width:1279px) and (min-width:769px){.cp-masonry{column-count:1;column-gap:20px}}
+@media (max-width:768px){.cp-masonry{column-count:1;column-gap:16px}}
+@media (max-width:640px){.cp-masonry{column-gap:12px}}
+.cp-masonry > *{display:inline-block;width:100%;break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 24px}
+@media (max-width:768px){.cp-masonry > *{margin:0 0 16px}}
+@media (max-width:640px){.cp-masonry > *{margin:0 0 12px}}
+
+.wp-block-columns.cp-masonry{column-gap:24px}
+@media (min-width:1280px){.wp-block-columns.cp-masonry{column-count:2}}
+@media (max-width:1279px){.wp-block-columns.cp-masonry{column-count:1}}
+.wp-block-columns.cp-masonry{display:block}
+.wp-block-columns.cp-masonry .wp-block-column{display:contents}
+.wp-block-columns.cp-masonry .wp-block-column > *{display:inline-block;width:100%;break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 24px}
+
+.cp-masonry .wp-block-columns{display:contents}
+.cp-masonry .wp-block-column{display:contents}
+.cp-masonry .wp-block-column > *{display:inline-block;width:100%;break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 24px}
+
+.cp-masonry .wp-block-group.is-layout-grid,
+.cp-masonry .wp-block-group.is-layout-flex{display:contents}
+.cp-masonry .wp-block-group.is-layout-grid > *,
+.cp-masonry .wp-block-group.is-layout-flex > *{display:inline-block;width:100%;break-inside:avoid;-webkit-column-break-inside:avoid;margin:0 0 24px}
+
+/* Improved grid layouts with better responsive breakpoints */
+.cp-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}
+@media (max-width:768px){.cp-grid-2{grid-template-columns:1fr;gap:16px}}
+@media (max-width:640px){.cp-grid-2{gap:12px}}
+
+.cp-grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:start}
+@media (max-width:1279px){.cp-grid-3{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+@media (max-width:768px){.cp-grid-3{grid-template-columns:1fr;gap:16px}}
+@media (max-width:640px){.cp-grid-3{gap:12px}}
+
+.cp-gr, .cp-gr > .wp-block-group{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:start}
+@media (max-width:1279px){.cp-gr, .cp-gr > .wp-block-group{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+@media (max-width:768px){.cp-gr, .cp-gr > .wp-block-group{grid-template-columns:1fr;gap:16px}}
+@media (max-width:640px){.cp-gr, .cp-gr > .wp-block-group{gap:12px}}
+
+.cp-grid-3 .copella-playlist{margin:0}
+.cp-grid-3 .copella-playlist.has-cover > .pl-header{padding:12px 16px}
+.cp-grid-3 .copella-playlist.has-cover > .pl-panels{padding:12px 16px 16px}
+.cp-grid-3 .copella-playlist .pl-title{font-size:18px}
+.cp-grid-3 .copella-playlist .pl-item-title{font-size:15px}
+.cp-grid-3 .copella-playlist .pl-thumb{width:76px}
+.cp-grid-3 .copella-playlist .pl-item{padding:8px 10px}
+.cp-grid-3 .copella-playlist .pl-cover{min-height:160px}
+.cp-gr .copella-playlist{margin:0}
+.cp-gr .copella-playlist.has-cover > .pl-header{padding:12px 16px}
+.cp-gr .copella-playlist.has-cover > .pl-panels{padding:12px 16px 16px}
+.cp-gr .copella-playlist .pl-title{font-size:18px}
+.cp-gr .copella-playlist .pl-item-title{font-size:15px}
+.cp-gr .copella-playlist .pl-thumb{width:76px}
+.cp-gr .copella-playlist .pl-item{padding:8px 10px}
+.cp-gr .copella-playlist .pl-cover{min-height:160px}
+
+/* Global overflow prevention and mobile viewport improvements */
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+/* Enhanced mobile viewport constraints */
+@media (max-width: 768px) {
+  html {
+    overflow-x: hidden;
+  }
+  
+  body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+  
+  .copella-authors {
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs {
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs .au-panels {
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel {
+    overflow-x: hidden !important;
+  }
+}
+
+/* Authors grid with improved responsive design */
+.copella-authors{color:#fff;font-family:'Gilroy-SemiBold',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;max-width:100%;overflow:hidden;box-sizing:border-box;width:100%;margin:0;padding:0}
+.copella-authors .au-title{margin:0 0 14px 0;font-size:22px;font-weight:700;font-family:'Gilroy-Bold','Gilroy-SemiBold',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;line-height:1.2}
+.copella-authors .au-grid{display:grid;grid-template-columns:repeat(var(--au-cols,3),minmax(0,1fr));gap:var(--au-gap,24px);align-items:start;width:100%;max-width:100%;margin:0;padding:0;box-sizing:border-box}
+.copella-authors .au-card{background:#171717;border:1px solid rgba(255,255,255,.06);border-radius:24px;overflow:hidden;align-self:start;display:flex;flex-direction:column;max-width:100%;box-sizing:border-box;position:relative}
+.copella-authors .au-header{display:flex;align-items:center;justify-content:space-between;margin:0;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08);cursor:pointer;background:rgba(255,255,255,.02);flex-shrink:0;min-height:56px;box-sizing:border-box}
+.copella-authors .au-name{margin:0;font-size:18px;font-weight:700;font-family:'Gilroy-Bold','Gilroy-SemiBold',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;line-height:1.3;letter-spacing:0.01em;flex:1;min-width:0;text-overflow:ellipsis;overflow:hidden}
+.copella-authors .au-header .au-live{display:inline-block;width:10px;height:10px;border-radius:999px;margin-left:8px;vertical-align:middle;background:rgba(255,255,255,.3)}
+.copella-authors .au-header .au-live.is-on{background:#F658A4;box-shadow:0 0 0 4px rgba(246,88,164,.25)}
+.copella-authors .au-header .au-live.is-off{background:rgba(255,255,255,.35)}
+.copella-authors .au-arrow{width:34px;height:34px;display:grid;place-items:center;border:0;background:transparent;border-radius:10px;color:#fff;opacity:.9;transition:background .2s ease,opacity .2s ease;line-height:0;cursor:pointer}
+.copella-authors .au-arrow svg{display:block;transition:transform .2s ease;transform-origin:50% 50%}
+.copella-authors .au-arrow:hover{background:rgba(255,255,255,.06);opacity:1}
+.copella-authors .au-card.is-collapsed .au-arrow svg{transform:rotate(180deg)}
+.copella-authors .au-card:not(.is-collapsed) .au-arrow svg{transform:rotate(0deg)}
+/* Cover with fixed aspect and overlayed watch button */
+.copella-authors .au-cover{position:relative;aspect-ratio:var(--au-cover-ratio,16/9);background:#2a2a2a;overflow:hidden}
+@supports not (aspect-ratio: 1 / 1){
+  .copella-authors .au-cover{position:relative;padding-top:56.25%}
+  .copella-authors .au-cover img{position:absolute;inset:0}
+}
+.copella-authors .au-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.copella-authors .au-cover::after{content:"";position:absolute;left:0;right:0;bottom:0;height:36%;background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.35) 100%);pointer-events:none}
+.copella-authors .au-cover .au-watch{position:absolute;right:12px;bottom:12px;z-index:2;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#000;text-decoration:none;border-radius:10px;padding:8px 12px;font-size:14px;font-weight:700;font-family:'Gilroy-Bold','Gilroy-SemiBold',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.copella-authors .au-cover .au-watch:hover{opacity:.95}
+.copella-authors .au-body{padding:16px;transition:height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);overflow:hidden;max-width:100%;box-sizing:border-box}
+.copella-authors .au-cover + .au-body{border-top:1px solid rgba(255,255,255,.08);padding:16px}
+.copella-authors .au-card.is-collapsed .au-body{height:0;opacity:0;padding-top:0;padding-bottom:0}
+.copella-authors .au-card:not(.is-collapsed) .au-body{opacity:1;padding:16px;height:auto}
+.copella-authors .au-desc{margin:0 0 12px 0;font-size:14px;color:rgba(255,255,255,.82);line-height:1.45;letter-spacing:0.01em}
+.copella-authors .au-playlists .copella-playlist{margin:14px 0 0 0;width:100%;max-width:100%;overflow:hidden;box-sizing:border-box}
+
+/* Inner playlist tabs inside author cards */
+.copella-authors .au-pl-tabsbar{display:flex;align-items:center;gap:10px;margin:12px 0 10px 0;width:100%;max-width:100%;box-sizing:border-box}
+.copella-authors .au-pl-tabs-nav{background:transparent;border:0;color:#fff;opacity:.9;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;transition:background .2s ease,opacity .2s ease;flex-shrink:0}
+.copella-authors .au-pl-tabs-nav:hover{background:rgba(255,255,255,.06);opacity:1}
+.copella-authors .au-pl-tabs-nav:disabled{opacity:.25;pointer-events:none;background:transparent}
+.copella-authors .au-pl-tabs-viewport{overflow:hidden;flex:1;min-width:0;max-width:100%}
+.copella-authors .au-pl-tabs{display:flex;gap:10px;flex-wrap:nowrap;overflow-x:auto;padding:2px 2px 2px 8px;scrollbar-width:none;width:100%;max-width:100%;box-sizing:border-box}
+/* Show navigation arrows on mobile/small screens where scrolling is more common */
+.copella-authors .au-pl-tabsbar:not(.has-scroll) .au-pl-prev,
+.copella-authors .au-pl-tabsbar:not(.has-scroll) .au-pl-next{opacity:.6}
+/* On larger screens, make arrows more subtle when not needed */
+@media (min-width: 1025px) {
+  .copella-authors .au-pl-tabsbar:not(.has-scroll) .au-pl-prev,
+  .copella-authors .au-pl-tabsbar:not(.has-scroll) .au-pl-next{opacity:.25}
+}
+.copella-authors .au-pl-tabs::-webkit-scrollbar{display:none;height:0}
+
+/* Enhanced playlist tab visibility control */
+.copella-authors .au-pl-wrap {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.copella-authors .au-pl-wrap[style*="display: none"] {
+  display: none !important;
+}
+
+.copella-authors .au-pl-wrap--title-only[style*="display: none"] {
+  display: none !important;
+}
+
+.copella-authors .au-pl-wrap--full[style*="display: none"] {
+  display: none !important;
+}
+
+.copella-authors .copella-playlist--title-only[style*="display: none"] {
+  display: none !important;
+}
+
+/* Ensure proper display when showing specific playlists */
+.copella-authors .au-pl-wrap--full[style*="display: block"] {
+  display: block !important;
+}
+
+.copella-authors .au-pl-wrap--title-only[style*="display: grid"] {
+  display: grid !important;
+}
+
+/* Single playlist styling - always visible */
+.copella-authors .au-playlists--single {
+  margin-top: 0;
+}
+
+.copella-authors .au-playlists--single .au-pl-wrap--single {
+  display: block !important;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.copella-authors .au-playlists--single .copella-playlist {
+  margin: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.copella-authors .au-playlists--single .copella-playlist .pl-header {
+  display: none;
+}
+
+.copella-authors .au-playlists--single .copella-playlist .pl-panels {
+  display: block !important;
+  height: auto !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+}
+.copella-authors .au-pl-tab{background:rgba(255,255,255,.06);color:#fff;border:0;border-radius:12px;padding:8px 12px;cursor:pointer;font:inherit;font-size:14px;line-height:1;opacity:.92;transition:background .2s ease,opacity .2s ease,color .2s ease;flex:0 0 auto;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+.copella-authors .au-pl-tab:hover{opacity:1;background:rgba(255,255,255,.1)}
+.copella-authors .au-pl-tab.is-active{background:#fff;color:#000;opacity:1;box-shadow:0 1px 0 rgba(255,255,255,.25) inset}
+
+/* Mobile improvements for playlist tabs */
+@media (max-width: 1024px) {
+  .copella-authors .au-pl-tabsbar {
+    gap: 8px;
+    margin: 10px 0 8px 0;
+  }
+  
+  .copella-authors .au-pl-tabs-nav {
+    width: 30px;
+    height: 30px;
+    opacity: .8;
+  }
+  
+  .copella-authors .au-pl-tabs-nav:not(:disabled) {
+    opacity: .9;
+  }
+  
+  .copella-authors .au-pl-tabs {
+    gap: 8px;
+    padding: 2px;
+  }
+  
+  .copella-authors .au-pl-tab {
+    padding: 6px 10px;
+    font-size: 13px;
+    min-width: 0;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Collapsible behavior - improved for consistent smooth animation */
+.copella-authors .au-card.is-stream .au-header{gap:10px}
+.copella-authors .au-card.is-stream .au-header .au-name{flex:1}
+.copella-authors .au-card.is-stream .au-header .au-arrow{margin-left:auto}
+
+/* Enhanced animation transitions for all au-body elements */
+.copella-authors .au-card .au-body{
+  padding:16px;
+  transition:height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow:hidden;
+  max-width:100%;
+  box-sizing:border-box;
+  transform-origin:top;
+}
+
+.copella-authors .au-card.is-collapsed .au-body{
+  height:0;
+  opacity:0;
+  overflow:hidden;
+  padding-top:0;
+  padding-bottom:0;
+  margin-top:0;
+  margin-bottom:0;
+}
+
+/* Improved responsive grid for authors */
+@media (max-width:1279px){.copella-authors .au-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+@media (max-width:768px){.copella-authors .au-grid{grid-template-columns:1fr;gap:16px;padding:0;margin:0}}
+@media (max-width:640px){.copella-authors .au-grid{gap:12px;padding:0;margin:0}}
+
+/* Consistent side paddings with other blocks */
+@media (max-width: 640px){
+  .copella-authors{margin-left:12px;margin-right:12px;overflow-x:hidden;padding:0;box-sizing:border-box}
+  .copella-authors .au-grid{margin:0;padding:0;width:100%;box-sizing:border-box}
+  .copella-authors .au-card{border-radius:20px;margin:0;position:relative;left:0;right:0;transform:none}
+  .copella-authors .au-header{padding:12px 14px;min-height:52px}
+  .copella-authors .au-name{font-size:16px;line-height:1.25}
+  .copella-authors .au-body{padding:12px 14px}
+  
+  /* Ensure mobile content doesn't overflow */
+  .copella-authors.is-tabs .au-panel {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    left: 0;
+    right: 0;
+    transform: none;
+    box-sizing: border-box;
+  }
+  
+  .copella-authors.is-tabs .au-panel .au-card--full-width {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    left: 0;
+    right: 0;
+    transform: none;
+    box-sizing: border-box;
+  }
+  
+  .copella-authors.is-tabs .au-panel .au-card--full-width .au-body {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+  .copella-authors.is-tabs .au-panel .au-playlists {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+  }
+}
+@media (max-width: 1024px) and (min-width: 641px){
+  .copella-authors{margin-left:16px;margin-right:16px;overflow-x:hidden;padding:0;box-sizing:border-box}
+  .copella-authors .au-grid{margin:0;padding:0;box-sizing:border-box}
+  .copella-authors .au-card{border-radius:22px;margin:0;position:relative;transform:none}
+  .copella-authors .au-header{padding:13px 15px;min-height:54px}
+  .copella-authors .au-name{font-size:17px}
+}
+
+/* Improved tabs layout with better responsive behavior */
+.copella-authors.is-tabs .au-tabsbar{display:flex;align-items:center;gap:10px;margin:12px 0 14px 0;padding:0 4px;width:100%;max-width:100%;box-sizing:border-box;overflow:hidden}
+.copella-authors.is-tabs .au-tabs-nav{background:transparent;border:0;color:#fff;opacity:.9;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;transition:background .2s ease,opacity .2s ease;flex-shrink:0}
+.copella-authors.is-tabs .au-tabs-nav:hover{background:rgba(255,255,255,.06);opacity:1}
+.copella-authors.is-tabs .au-tabs-nav:disabled{opacity:.25;pointer-events:none;background:transparent}
+/* Better visibility for navigation arrows */
+.copella-authors.is-tabs .au-tabsbar:not(.has-scroll) .au-tabs-nav{opacity:.4}
+.copella-authors.is-tabs .au-tabs-viewport{overflow:hidden;flex:1;min-width:0;max-width:100%}
+.copella-authors.is-tabs .au-tabs{display:flex;gap:10px;flex-wrap:nowrap;padding:2px 8px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;width:100%;max-width:100%;box-sizing:border-box}
+.copella-authors.is-tabs .au-tabs::-webkit-scrollbar{display:none;height:0}
+.copella-authors.is-tabs .au-tab{background:rgba(255,255,255,.06);color:#fff;border:0;border-radius:12px;padding:8px 12px;cursor:pointer;font:inherit;font-size:14px;line-height:1.1;opacity:.92;transition:background .2s ease,opacity .2s ease, color .2s ease;flex:0 0 auto;white-space:nowrap;min-width:max-content;max-width:200px;text-align:center;letter-spacing:0.01em}
+.copella-authors.is-tabs .au-tab:hover{opacity:1;background:rgba(255,255,255,.1)}
+.copella-authors.is-tabs .au-tab.is-active{background:#fff;color:#000;opacity:1;box-shadow:0 1px 0 rgba(255,255,255,.25) inset}
+.copella-authors.is-tabs .au-panels{position:relative;overflow:hidden}
+.copella-authors.is-tabs .au-panel{display:none;width:100%;box-sizing:border-box}
+.copella-authors.is-tabs .au-panel.is-active{display:block}
+
+/* Improved responsive grid for author tabs */
+.copella-authors.is-tabs .au-grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:var(--au-gap,24px)}
+@media (max-width:1279px){
+  .copella-authors.is-tabs .au-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:20px}
+}
+@media (max-width:1024px){
+  /* Fix full-width cards in "All" panel on tablets - make them vertical */
+  .copella-authors.is-tabs .au-panel[data-au-index="all"] .au-card--full-width {
+    flex-direction: column !important;
+    gap: 0 !important;
+    background: #171717 !important;
+    border: 1px solid rgba(255,255,255,.06) !important;
+    border-radius: 22px !important;
+    padding: 0 !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel[data-au-index="all"] .au-card--full-width .au-header {
+    padding: 14px 18px !important;
+    border-bottom: 1px solid rgba(255,255,255,.08) !important;
+    background: rgba(255,255,255,.02) !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel[data-au-index="all"] .au-card--full-width .au-body {
+    padding: 18px !important;
+  }
+}
+@media (max-width:768px){
+  .copella-authors.is-tabs .au-grid{grid-template-columns:1fr !important;gap:16px;margin:0;padding:0;width:100%;box-sizing:border-box}
+  .copella-authors.is-tabs .au-tabsbar{gap:8px;padding:0 2px;margin:12px 0 14px;box-sizing:border-box}
+  .copella-authors.is-tabs .au-tabs-nav{width:30px;height:30px}
+  .copella-authors.is-tabs .au-tab{padding:6px 10px;font-size:13px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  
+  /* Stronger mobile rules */
+  .copella-authors.is-tabs .au-panel[data-au-index="all"] .au-card--full-width {
+    border-radius: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel[data-au-index="all"] .au-card--full-width .au-header {
+    padding: 12px 16px !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel[data-au-index="all"] .au-card--full-width .au-body {
+    padding: 16px !important;
+  }
+}
+@media (max-width:640px){
+  .copella-authors.is-tabs .au-grid{gap:12px}
+  .copella-authors.is-tabs .au-tab{max-width:100px;padding:5px 8px;font-size:12px}
+}
+
+
+
+/* Социальные сети авторов */
+.au-social{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 16px 0}
+.au-social-link{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(255,255,255,.08);color:#fff;text-decoration:none;border-radius:8px;font-size:13px;transition:background .2s ease,opacity .2s ease;opacity:.9}
+.au-social-link:hover{background:rgba(255,255,255,.12);opacity:1;color:#fff}
+.au-social-icon{font-size:14px;line-height:1}
+.au-social-name{font-weight:500}
+.au-social-logo{display:inline-flex;align-items:center;margin-right:6px}
+.au-social-logo img{display:block;width:16px;height:16px;border-radius:3px;opacity:.95}
+
+/* Badges alignment inside author playlists too */
+.copella-authors .copella-playlist .pl-item-badge{display:inline-flex;align-items:center;justify-content:center;min-height:22px}
+
+/* Пустое состояние для авторов */
+.au-empty{padding:10px 0;color:rgba(255,255,255,.7);font-size:14px;text-align:center}
+
+.copella-authors .au-stream-program{margin:8px 0 10px}
+.copella-authors .au-stream-info{margin:8px 0 10px; color:rgba(255,255,255,.85); font-size:14px}
+.copella-authors .au-btn{display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#000;text-decoration:none;border-radius:10px;padding:8px 12px;font-size:14px;font-weight:700;font-family:'Gilroy-Bold','Gilroy-SemiBold',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+.copella-authors .au-btn:hover{opacity:.95}
+.copella-authors .au-watch-link{display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#000;text-decoration:none;border-radius:10px;padding:8px 16px;font-size:14px;font-weight:700;font-family:'Gilroy-Bold','Gilroy-SemiBold',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;margin-top:10px;align-self:flex-start}
+.copella-authors .au-watch-link:hover{opacity:.95;color:#000}
+/* Compact overrides for embedded tvschedule (best-effort) */
+.copella-authors .au-program--compact .tv-schedule{background:rgba(255,255,255,.04);border-radius:12px;padding:10px}
+.copella-authors .au-program--compact .tv-schedule-header{opacity:.85;font-size:12px;margin-bottom:6px}
+.copella-authors .au-program--compact .tv-schedule-upcoming-header{opacity:.85;font-size:12px;margin-top:8px}
+.copella-authors .au-program--compact .tv-schedule-now .tv-schedule-current-program{font-size:14px}
+
+.copella-authors .au-program-mini{background:rgba(255,255,255,.04);border-radius:12px;padding:10px}
+.copella-authors .au-program-mini{border:1px solid rgba(255,255,255,.06)}
+.copella-authors .au-program-mini .ap-now{display:flex;gap:8px;align-items:center;margin:0 0 6px 0}
+.copella-authors .au-program-mini .ap-next{display:block}
+.copella-authors .au-program-mini .ap-label{opacity:.75;font-size:12px}
+.copella-authors .au-program-mini .ap-time{font-size:12px;opacity:.85;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:6px}
+.copella-authors .au-program-mini .ap-title{font-size:14px;margin-left:6px}
+.copella-authors .au-program-mini .ap-list{list-style:none;padding:0;margin:6px 0 0 0;display:grid;gap:4px}
+.copella-authors .au-program-mini .ap-list li{display:flex;gap:8px;align-items:center}
+.copella-authors .au-program-mini .ap-empty{opacity:.7}
+.copella-authors .au-program-mini .ap-offline{opacity:.85}
+.copella-authors .au-program-mini .ap-nodata{display:flex;align-items:center;gap:8px;opacity:.85}
+.copella-authors .au-program-mini .ap-nodata .ap-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:rgba(255,255,255,.08);border-radius:6px}
+.copella-authors .au-program-mini .ap-nodata .ap-text{font-size:14px}
+
+/* Individual author tab layout - compact and efficient */
+.au-grid--individual-tab {
+  display: block !important;
+  grid-template-columns: unset !important;
+}
+
+.au-card--full-width {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Ensure playlists in individual tabs take full available width */
+.au-grid--individual-tab .au-card--full-width .au-body {
+  width: 100% !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.au-grid--individual-tab .au-card--full-width .au-playlists {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.au-grid--individual-tab .au-card--full-width .au-playlists .au-pl-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.au-grid--individual-tab .au-card--full-width .au-playlists .au-pl-wrap--title-only {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+/* Force full width for individual author content */
+.au-grid--individual-tab .au-content-wrapper {
+  flex: 1;
+  min-width: 0;
+  width: 100% !important;
+}
+
+.au-card--full-width {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+  width: 100% !important;
+  max-width: 100% !important;
+  background: transparent;
+  border: none;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Compact layout when there's no description to prevent excessive spacing */
+.au-card--full-width:not(:has(.au-desc)) {
+  gap: 12px;
+}
+
+/* Fallback for browsers without :has() support */
+@supports not selector(:has(*)) {
+  .au-card--full-width {
+    gap: 12px;
+  }
+}
+
+/* No cover layout - stack content vertically */
+.au-card--no-cover {
+  flex-direction: column !important;
+  gap: 0 !important;
+  background: #171717;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 20px;
+  padding: 0;
+  display: flex;
+  min-height: 0;
+  align-self: start;
+}
+
+.au-card--no-cover .au-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.02);
+  border-radius: 20px 20px 0 0;
+}
+
+.au-card--no-cover .au-body {
+  padding: 16px 20px 20px;
+  background: transparent;
+}
+
+/* Compact author cover on individual tabs */
+.au-grid--individual-tab .au-cover {
+  flex: 0 0 280px;
+  aspect-ratio: 16/9;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Smaller cover when there's no description for better proportions */
+.au-grid--individual-tab:not(:has(.au-desc)) .au-cover {
+  flex: 0 0 220px;
+}
+
+/* Fallback for browsers without :has() support */
+@supports not selector(:has(*)) {
+  .au-grid--individual-tab .au-cover {
+    flex: 0 0 220px;
+  }
+}
+
+@supports not (aspect-ratio: 16/9) {
+  .au-grid--individual-tab .au-cover {
+    width: 280px;
+    height: 157px;
+  }
+}
+
+.au-grid--individual-tab .au-content-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+/* When in individual tab context, remove collapse functionality */
+.au-grid--individual-tab .au-card--full-width .au-arrow {
+  display: none;
+}
+
+.au-grid--individual-tab .au-card--full-width .au-body {
+  height: auto !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+  padding: 0;
+}
+
+/* Compact playlist layout */
+.au-playlists--compact {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.au-playlists--compact .au-pl-wrap {
+  width: 100%;
+}
+
+/* Make playlists more compact in individual tabs */
+.au-playlists--compact .copella-playlist {
+  margin-bottom: 0;
+  padding: 16px 20px;
+  border-radius: 16px;
+}
+
+.au-playlists--compact .copella-playlist .pl-title {
+  font-size: 18px;
+}
+
+.au-playlists--compact .copella-playlist .pl-thumb {
+  width: 60px;
+}
+
+.au-playlists--compact .copella-playlist .pl-item {
+  padding: 8px 12px;
+  gap: 10px;
+}
+
+.au-playlists--compact .copella-playlist .pl-item-title {
+  font-size: 14px;
+}
+
+.au-playlists--compact .copella-playlist .pl-item-meta {
+  font-size: 11px;
+}
+
+/* Ensure playlists are always expanded in compact layout */
+.au-playlists--compact .copella-playlist.is-collapsed .pl-panels {
+  height: auto !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+}
+
+.au-playlists--compact .copella-playlist.is-collapsed .pl-tabsbar {
+  display: flex !important;
+}
+
+/* Hide collapse arrows in compact mode */
+.au-playlists--compact .copella-playlist .pl-arrow {
+  display: none;
+}
+
+/* Title-only playlist styling (for "All" view) */
+.copella-playlist--title-only {
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border: 1px solid #3F3F3F;
+}
+
+.copella-playlist--title-only .pl-header {
+  padding: 0;
+  border-bottom: none;
+  cursor: default;
+}
+
+.copella-playlist--title-only .pl-header--no-expand {
+  justify-content: flex-start;
+}
+
+.copella-playlist--title-only .pl-title {
+  font-size: 18px;
+  margin: 0;
+}
+
+/* No hover effects for title-only headers */
+.copella-playlist--title-only .pl-header:hover {
+  background: transparent;
+}
+
+/* Two-column layout for title-only playlists container */
+.au-playlists--title-only {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* Mixed playlists container - contains both title-only and full versions */
+.au-playlists--mixed {
+  display: block;
+}
+
+/* Title-only wrapper in mixed container - this is the grid container */
+.au-playlists--mixed .au-pl-wrap--title-only {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* Individual title items within the grid */
+.au-playlists--mixed .au-pl-wrap--title-only .copella-playlist--title-only {
+  /* Remove any margin since grid handles spacing */
+  margin-bottom: 0;
+  /* Ensure text wraps properly in narrow containers */
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.au-playlists--mixed .au-pl-wrap--title-only .copella-playlist--title-only .pl-title {
+  /* Allow title text to wrap */
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+  line-height: 1.3;
+}
+
+/* Full playlist wrapper in mixed container */
+.au-playlists--mixed .au-pl-wrap--full {
+  display: block;
+  margin-bottom: 20px;
+}
+
+/* Individual project playlist styling - clean and simple */
+.au-playlists--mixed .au-pl-wrap--full .copella-playlist {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-header {
+  display: none;
+}
+
+.au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-item {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: background .2s ease;
+}
+
+.au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-item:hover {
+  background: rgba(255,255,255,.04);
+}
+
+.au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-thumb {
+  width: 80px;
+  height: 80px;
+  aspect-ratio: 1/1;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-item-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #fff;
+  margin: 0;
+}
+
+.au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-item-meta {
+  font-size: 13px;
+  color: rgba(255,255,255,.7);
+  margin: 0;
+}
+
+.au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-item-badge {
+  background: #FF653A;
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  margin-top: 2px;
+  align-self: flex-start;
+}
+
+/* More columns for wide screens */
+@media (min-width: 1600px) {
+  .au-playlists--title-only {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--title-only {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1280px) and (max-width: 1599px) {
+  .au-playlists--title-only {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--title-only {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Force narrow layout for playlist grids inside author cards */
+/* This ensures project grids within author cards don't use wide-screen column counts */
+.copella-authors .au-playlists--mixed .au-pl-wrap--title-only {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* But in individual author tabs, allow more flexibility */
+.au-grid--individual-tab .au-playlists--mixed .au-pl-wrap--title-only {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+}
+
+@media (max-width: 1024px) {
+  .copella-authors .au-playlists--mixed .au-pl-wrap--title-only {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .au-grid--individual-tab .au-playlists--mixed .au-pl-wrap--title-only {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Responsive adjustments for title-only playlists */
+@media (max-width: 1024px) {
+  .copella-playlist--title-only {
+    padding: 12px 16px;
+    margin-bottom: 12px;
+  }
+  
+  .copella-playlist--title-only .pl-title {
+    font-size: 16px;
+  }
+  
+  .au-playlists--title-only {
+    gap: 12px;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--title-only {
+    gap: 12px;
+  }
+  
+  /* Better text handling on medium screens */
+  .au-playlists--mixed .au-pl-wrap--title-only .copella-playlist--title-only .pl-title {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-thumb {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-item-title {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .au-playlists--title-only {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--title-only {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  /* Ensure proper text wrapping on mobile */
+  .au-playlists--mixed .au-pl-wrap--title-only .copella-playlist--title-only {
+    min-width: 0;
+    max-width: 100%;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--title-only .copella-playlist--title-only .pl-title {
+    font-size: 16px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-thumb {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-item {
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-item-title {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .copella-playlist--title-only {
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+  }
+  
+  .copella-playlist--title-only .pl-title {
+    font-size: 15px;
+  }
+  
+  .au-playlists--title-only {
+    gap: 8px;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--title-only {
+    gap: 8px;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-item {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .au-playlists--mixed .au-pl-wrap--full .copella-playlist .pl-thumb {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* Smaller tabs in compact mode */
+.au-playlists--compact .au-pl-tab {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+.au-playlists--compact .au-pl-tabs-nav {
+  width: 28px;
+  height: 28px;
+}
+
+.au-playlists--compact .au-pl-tabs-nav svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Mobile responsive improvements for individual tabs */
+@media (max-width: 1024px) {
+  .au-card--full-width {
+    flex-direction: column !important;
+    gap: 16px;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+  
+  .au-grid--individual-tab {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+  }
+  
+  .au-grid--individual-tab .au-cover {
+    flex: none;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  /* Force mobile layout for individual author panels */
+  .copella-authors.is-tabs .au-panel:not([data-au-index="all"]) {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel:not([data-au-index="all"]) .au-card--full-width {
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    width: 100% !important;
+    transform: none !important;
+    left: 0 !important;
+    right: 0 !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel:not([data-au-index="all"]) .au-grid--individual-tab {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel:not([data-au-index="all"]) .au-grid--individual-tab .au-cover {
+    display: none !important;
+  }
+  
+  .au-playlists--compact .copella-playlist .pl-thumb {
+    width: 56px;
+  }
+  
+  .copella-authors .au-header {
+    padding: 10px 12px;
+  }
+  
+  .copella-authors .au-name {
+    font-size: 16px;
+  }
+  
+  .copella-authors .au-card {
+    border-radius: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .au-card--full-width {
+    gap: 12px;
+    margin: 0 !important;
+    padding: 12px !important;
+    position: relative !important;
+    transform: none !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .au-grid--individual-tab {
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    transform: none !important;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .au-grid--individual-tab .au-cover {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+  
+  /* Fix mobile individual author panels positioning */
+  .copella-authors.is-tabs .au-panel:not([data-au-index="all"]) {
+    position: relative !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    transform: none !important;
+    left: 0 !important;
+    right: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel:not([data-au-index="all"]) .au-grid--individual-tab {
+    position: relative !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    transform: none !important;
+    left: 0 !important;
+    right: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel:not([data-au-index="all"]) .au-card--full-width {
+    position: relative !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    width: 100% !important;
+    transform: none !important;
+    left: 0 !important;
+    right: 0 !important;
+    border-radius: 16px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .au-playlists--compact {
+    gap: 12px;
+    margin-top: 12px;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  
+  .au-playlists--compact .copella-playlist {
+    padding: 12px 16px;
+    border-radius: 12px;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors .au-header {
+    padding: 8px 12px;
+  }
+  
+  .copella-authors .au-name {
+    font-size: 15px;
+  }
+  
+  .copella-authors .au-card {
+    border-radius: 16px;
+  }
+  
+  .copella-authors .au-body {
+    padding: 12px;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors .au-card:not(.is-collapsed) .au-body {
+    padding: 12px;
+  }
+  
+  .copella-authors .au-cover + .au-body {
+    padding: 12px;
+  }
+  
+  .au-card--no-cover .au-body {
+    padding: 12px 16px 16px;
+  }
+  
+  .au-card--no-cover {
+    border-radius: 16px;
+  }
+}
+
+/* Author card styling with small icon instead of large cover */
+.au-card--no-cover .au-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.02);
+  border-radius: 20px 20px 0 0;
+}
+
+.au-card--no-cover .au-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Small square author icon with responsive sizing */
+.au-author-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--ht-card-placeholder, #FF653A);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.au-author-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Responsive adjustments for author icons */
+@media (max-width: 768px) {
+  .au-card--no-cover .au-header {
+    gap: 10px;
+    padding: 12px 16px 10px;
+  }
+  
+  .au-card--no-cover .au-name {
+    gap: 8px;
+    font-size: 16px;
+  }
+  
+  .au-author-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .au-card--no-cover .au-header {
+    gap: 8px;
+    padding: 10px 14px 8px;
+  }
+  
+  .au-card--no-cover .au-name {
+    font-size: 15px;
+  }
+  
+  .au-author-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+}
+
+/* Watch link styling for individual author tabs */
+.au-watch-link {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #FF653A;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background .2s ease;
+}
+
+.au-watch-link:hover {
+  background: #e55a34;
+  color: #fff;
+}
+
+/* Complete mobile fix - force individual author tabs to be properly aligned */
+@media (max-width: 768px) {
+  /* Reset all positioning for individual author panels */
+  .copella-authors.is-tabs .au-panel[data-au-index]:not([data-au-index="all"]) {
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel[data-au-index]:not([data-au-index="all"]) .au-grid--individual-tab {
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel[data-au-index]:not([data-au-index="all"]) .au-card--full-width {
+    position: static !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+    flex-direction: column !important;
+    background: #171717 !important;
+    border: 1px solid rgba(255,255,255,.06) !important;
+    border-radius: 16px !important;
+    overflow-x: hidden !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel[data-au-index]:not([data-au-index="all"]) .au-card--full-width .au-header {
+    padding: 0 0 12px 0 !important;
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255,255,255,.08) !important;
+  }
+  
+  .copella-authors.is-tabs .au-panel[data-au-index]:not([data-au-index="all"]) .au-card--full-width .au-body {
+    padding: 12px 0 0 0 !important;
+    width: 100% !important;
+  }
+}
+
+/* Enhanced mobile overflow protection */
+@media (max-width: 768px) {
+  .copella-authors {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 12px !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  
+  .copella-authors.is-tabs {
+    overflow-x: hidden !important;
+    width: calc(100% - 24px) !important;
+    max-width: calc(100% - 24px) !important;
+    margin: 0 12px !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  
+  .copella-authors.is-tabs .au-panels {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Mobile layout improvements for better visual perception */
+@media (max-width: 768px) {
+  .copella-authors .au-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+    padding: 0 2px;
+  }
+  
+  .copella-authors .au-desc {
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0 0 12px 0;
+    color: rgba(255,255,255,.82);
+  }
+  
+  .copella-authors .au-arrow {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .copella-authors .au-arrow svg {
+    width: 18px;
+    height: 18px;
+  }
+}
