@@ -406,6 +406,68 @@ add_action('admin_menu', function(): void {
     );
 });
 
+// Add "Add New Creator" submenu
+add_action('admin_menu', function(): void {
+    add_submenu_page(
+        'copella-creators',
+        __('Добавить креатора', 'copella-creators'),
+        __('Добавить креатора', 'copella-creators'),
+        'manage_options',
+        'post-new.php?post_type=creator'
+    );
+});
+
+// Flush rewrite rules on activation
+register_activation_hook(__FILE__, function(): void {
+    flush_rewrite_rules();
+});
+
+// Add custom template for creator pages
+add_filter('template_include', function($template) {
+    if (is_singular('creator')) {
+        $custom_template = COPELLA_CREATORS_DIR . 'single-creator.php';
+        if (file_exists($custom_template)) {
+            return $custom_template;
+        }
+    }
+    if (is_post_type_archive('creator')) {
+        $custom_template = COPELLA_CREATORS_DIR . 'archive-creator.php';
+        if (file_exists($custom_template)) {
+            return $custom_template;
+        }
+    }
+    return $template;
+});
+
+// Add body class for creator pages
+add_filter('body_class', function($classes) {
+    if (is_singular('creator')) {
+        $classes[] = 'single-creator';
+    }
+    if (is_post_type_archive('creator')) {
+        $classes[] = 'archive-creator';
+    }
+    return $classes;
+});
+
+// Create custom template for creator pages
+add_action('wp_head', function() {
+    if (is_singular('creator')) {
+        $creator_id = get_the_ID();
+        $background_image = (int) get_post_meta($creator_id, COPELLA_CREATOR_META_BACKGROUND_IMAGE, true);
+        if ($background_image) {
+            $background_url = wp_get_attachment_image_url($background_image, 'full');
+            if ($background_url) {
+                echo '<style>
+                body.single-creator .cp-creator-page .cp-creator-background {
+                    background-image: url("' . esc_url($background_url) . '") !important;
+                }
+                </style>';
+            }
+        }
+    }
+});
+
 // --- ФИНАЛЬНАЯ ФУНКЦИЯ ШОРТКОДА ---
 
 add_shortcode('top_creators', function ($atts = array()): string {
