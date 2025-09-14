@@ -1,0 +1,8 @@
+.copella-creators-admin .cp-creators-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.copella-creators-admin .cp-creator-item{border:1px solid #dcdcde;background:#fff;border-radius:8px;padding:12px}
+.copella-creators-admin .cp-creator-thumb{height:120px;background:#f6f7f7;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.copella-creators-admin .cp-creator-thumb img.cp-preview{max-width:100%;height:auto;display:block}
+.copella-creators-admin .cp-placeholder{opacity:.6}
+@media (max-width: 1200px){.copella-creators-admin .cp-creators-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width: 680px){.copella-creators-admin .cp-creators-grid{grid-template-columns:1fr;}}
+

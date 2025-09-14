@@ -1,0 +1,37 @@
+/* --- Шрифты --- */
+@font-face { font-family: 'Gilroy-SemiBold'; src: url('https://copella.live/assets/fonts/Gilroy-SemiBold.woff') format('woff'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Gilroy-Bold'; src: url('https://copella.live/assets/fonts/Gilroy-Bold.woff') format('woff'); font-weight: 800; font-style: normal; font-display: swap; }
+
+/* --- Стили блока "Топ авторов" --- */
+.cp-top-creators { --tc-gap: 20px; --tc-radius: 16px; --tc-padding-x: 20px; --tc-padding-x-desktop: 40px; color: #fff; }
+
+/* Заголовок и навигация */
+.cp-top-creators .tc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 0 var(--tc-padding-x); }
+.cp-top-creators .tc-title { margin: 0; font-weight: 800; font-size: 20px; font-family: 'Gilroy-Bold', 'Gilroy-SemiBold', system-ui, sans-serif; }
+.cp-top-creators .tc-titlebar { display: none; gap: 8px; }
+@media (min-width: 1024px) { .cp-top-creators .tc-titlebar { display: flex; } }
+.cp-top-creators .tc-nav { appearance: none; background: rgba(255, 255, 255, 0.08); border: 0; color: #fff; border-radius: 50%; width: 32px; height: 32px; display: inline-grid; place-items: center; cursor: pointer; transition: background-color 0.2s ease; }
+.cp-top-creators .tc-nav svg { width: 20px; height: 20px; }
+.cp-top-creators .tc-nav:hover { background-color: rgba(255, 255, 255, 0.15); }
+.cp-top-creators .tc-nav:disabled { opacity: .3; cursor: not-allowed; }
+
+/* Надежная структура карусели */
+.cp-top-creators .tc-viewport { background: transparent; padding: 0; margin: 0; }
+.cp-top-creators .tc-track { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--tc-gap); padding: 0 var(--tc-padding-x); }
+
+.cp-top-creators .tc-card { position: relative; width: 100%; }
+.cp-top-creators .tc-link { position: absolute; inset: 0; z-index: 3; border-radius: var(--tc-radius); }
+.cp-top-creators .tc-thumb { display: block; width: 100%; aspect-ratio: 1/1; border-radius: var(--tc-radius); background: #0f0f0f; overflow: hidden; position: relative; }
+.cp-top-creators .tc-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s ease; }
+.cp-top-creators .tc-card:hover .tc-thumb img { transform: scale(1.05); }
+.cp-top-creators .tc-thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,0) 60%); z-index: 1; }
+.cp-top-creators .tc-name { position: absolute; left: 12px; right: 12px; bottom: 10px; z-index: 2; font-weight: 600; font-size: clamp(14px, 1.2vw, 16px); text-shadow: 0 1px 2px rgba(0,0,0,.5); font-family: 'Gilroy-SemiBold', system-ui, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Адаптация под мобильные устройства */
+@media (max-width: 1024px) {
+    .cp-top-creators .tc-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 20px; margin-bottom: -20px; scrollbar-width: none; }
+    .cp-top-creators .tc-track::-webkit-scrollbar { display: none; }
+    .cp-top-creators .tc-card { flex: 0 0 150px; scroll-snap-align: start; }
+}
+@media (max-width: 768px) { .cp-top-creators .tc-card { flex-basis: 140px; } }
+@media (max-width: 560px) { .cp-top-creators .tc-card { flex-basis: 130px; } }
