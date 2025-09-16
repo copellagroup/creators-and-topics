@@ -128,7 +128,7 @@ add_action('admin_menu', function(): void{
                     $page_id = wp_insert_post([
                         'post_title' => $title,
                         'post_type' => 'page',
-                        'post_status' => 'draft',
+                        'post_status' => 'publish',
                         'post_content' => "<!-- wp:shortcode -->\n$shortcode\n<!-- /wp:shortcode -->",
                     ]);
                     if ($page_id && !is_wp_error($page_id)) { 

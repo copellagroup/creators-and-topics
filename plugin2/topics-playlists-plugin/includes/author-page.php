@@ -94,6 +94,11 @@ add_shortcode('author_page', function($atts): string {
             <?php if ($avatar): ?><img class="ap-avatar" src="<?php echo esc_url($avatar); ?>" alt="" loading="lazy"/><?php endif; ?>
             <div class="ap-head">
                 <h1 class="ap-name"><?php echo esc_html($name); ?></h1>
+                <div class="ap-subscribe-wrapper">
+                    <button class="ap-subscribe-btn" data-author-id="<?php echo (int)$pid; ?>">
+                        <?php echo esc_html__('Подписаться', 'copella-topics'); ?>
+                    </button>
+                </div>
                 <?php if (!empty($desc)): ?><div class="ap-desc"><?php echo esc_html($desc); ?></div><?php endif; ?>
             </div>
         </header>
@@ -132,6 +137,39 @@ add_shortcode('author_page', function($atts): string {
         </section>
         <?php endif; ?>
 
+        <?php 
+        // Get playlists for this author
+        $playlist_ids_raw = (string) get_post_meta($pid, COPELLA_AUTHOR_META_PLAYLISTS, true);
+        $playlist_ids = array_filter(array_map('absint', preg_split("/\r\n|\r|\n|,|\s+/", $playlist_ids_raw)));
+        if (!empty($playlist_ids)): 
+        ?>
+        <section class="ap-section ap-playlists">
+            <h2 class="ap-section-title"><?php echo esc_html__('Плейлисты', 'copella-topics'); ?></h2>
+            <div class="ap-playlists-carousel">
+                <?php foreach ($playlist_ids as $playlist_id): 
+                    $playlist_title = get_the_title($playlist_id);
+                    $playlist_thumb = get_the_post_thumbnail_url($playlist_id, 'medium');
+                    $playlist_link = get_permalink($playlist_id);
+                    if ($playlist_title && $playlist_link):
+                ?>
+                    <div class="ap-playlist-card">
+                        <a href="<?php echo esc_url($playlist_link); ?>" class="ap-playlist-link">
+                            <?php if ($playlist_thumb): ?>
+                                <img class="ap-playlist-thumb" src="<?php echo esc_url($playlist_thumb); ?>" alt="<?php echo esc_attr($playlist_title); ?>" loading="lazy"/>
+                            <?php endif; ?>
+                            <div class="ap-playlist-info">
+                                <h3 class="ap-playlist-title"><?php echo esc_html($playlist_title); ?></h3>
+                                <div class="ap-playlist-meta"><?php echo esc_html__('Плейлист', 'copella-topics'); ?></div>
+                            </div>
+                        </a>
+                    </div>
+                <?php 
+                    endif;
+                endforeach; ?>
+            </div>
+        </section>
+        <?php endif; ?>
+
         <?php if (!empty($social_networks)): ?>
         <section class="ap-section ap-socials">
             <h2 class="ap-section-title"><?php echo esc_html__('Социальные сети', 'copella-topics'); ?></h2>
@@ -144,19 +182,199 @@ add_shortcode('author_page', function($atts): string {
         <?php endif; ?>
     </section>
     <style>
-    .copella-author-page .ap-header{display:flex;gap:16px;align-items:center;margin-bottom:16px}
-    .copella-author-page .ap-avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;border:2px solid rgba(0,0,0,.1)}
-    .copella-author-page .ap-name{margin:0 0 6px 0}
-    .copella-author-page .ap-desc{opacity:.9}
-    .copella-author-page .ap-section{margin:24px 0}
-    .copella-author-page .ap-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-    .copella-author-page .ap-card{display:flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid #e5e5e5;border-radius:10px;background:#fff;text-decoration:none;color:inherit}
-    .copella-author-page .ap-card-thumb{width:42px;height:42px;border-radius:8px;object-fit:cover}
-    .copella-author-page .ap-card-title{font-weight:600}
-    .copella-author-page .ap-card-cat{font-size:.9em;opacity:.75}
-    .copella-author-page .ap-social-list{list-style:none;padding:0;margin:0;display:flex;gap:12px;flex-wrap:wrap}
-    .copella-author-page .ap-social-list a{text-decoration:none}
+    .copella-author-page {
+        background: #1a1a1a;
+        color: #ffffff;
+        padding: 24px;
+        border-radius: 16px;
+        margin: 20px 0;
+    }
+    .copella-author-page .ap-header {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        margin-bottom: 32px;
+    }
+    .copella-author-page .ap-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid rgba(255,255,255,0.1);
+        flex-shrink: 0;
+    }
+    .copella-author-page .ap-head {
+        flex: 1;
+    }
+    .copella-author-page .ap-name {
+        margin: 0 0 16px 0;
+        font-size: 2.2em;
+        font-weight: 700;
+        color: #ffffff;
+    }
+    .copella-author-page .ap-subscribe-wrapper {
+        margin-bottom: 16px;
+    }
+    .copella-author-page .ap-subscribe-btn {
+        background: #ffffff;
+        color: #000000;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .copella-author-page .ap-subscribe-btn:hover {
+        background: #f0f0f0;
+        transform: translateY(-1px);
+    }
+    .copella-author-page .ap-desc {
+        opacity: 0.9;
+        font-size: 1.1em;
+        line-height: 1.6;
+        color: #cccccc;
+    }
+    .copella-author-page .ap-section {
+        margin: 32px 0;
+    }
+    .copella-author-page .ap-section-title {
+        font-size: 1.5em;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #ffffff;
+    }
+    .copella-author-page .ap-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+    }
+    .copella-author-page .ap-card {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 16px;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.05);
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.2s ease;
+    }
+    .copella-author-page .ap-card:hover {
+        background: rgba(255,255,255,0.1);
+        transform: translateY(-2px);
+    }
+    .copella-author-page .ap-card-thumb {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+    .copella-author-page .ap-card-title {
+        font-weight: 600;
+        color: #ffffff;
+    }
+    .copella-author-page .ap-card-cat {
+        font-size: 0.9em;
+        opacity: 0.7;
+        color: #cccccc;
+    }
+    .copella-author-page .ap-playlists-carousel {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    .copella-author-page .ap-playlist-card {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+    .copella-author-page .ap-playlist-card:hover {
+        background: rgba(255,255,255,0.1);
+        transform: translateY(-2px);
+    }
+    .copella-author-page .ap-playlist-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+    .copella-author-page .ap-playlist-thumb {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+    .copella-author-page .ap-playlist-info {
+        padding: 16px;
+    }
+    .copella-author-page .ap-playlist-title {
+        font-size: 1.2em;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+        color: #ffffff;
+    }
+    .copella-author-page .ap-playlist-meta {
+        font-size: 0.9em;
+        opacity: 0.7;
+        color: #cccccc;
+    }
+    .copella-author-page .ap-social-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .copella-author-page .ap-social-list a {
+        text-decoration: none;
+        color: #ffffff;
+        padding: 8px 16px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    .copella-author-page .ap-social-list a:hover {
+        background: rgba(255,255,255,0.2);
+    }
     </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Subscribe button functionality
+        const subscribeBtns = document.querySelectorAll('.ap-subscribe-btn');
+        subscribeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const authorId = this.getAttribute('data-author-id');
+                const originalText = this.textContent;
+                
+                // Visual feedback
+                this.textContent = 'Подписываемся...';
+                this.disabled = true;
+                
+                // Simulate subscription (you can replace this with actual AJAX call)
+                setTimeout(() => {
+                    this.textContent = 'Подписан ✓';
+                    this.style.background = '#4CAF50';
+                    this.style.color = '#ffffff';
+                    
+                    // Store subscription state in localStorage
+                    localStorage.setItem('copella_subscribed_' + authorId, 'true');
+                }, 1000);
+            });
+            
+            // Check if already subscribed
+            const authorId = btn.getAttribute('data-author-id');
+            if (localStorage.getItem('copella_subscribed_' + authorId) === 'true') {
+                btn.textContent = 'Подписан ✓';
+                btn.style.background = '#4CAF50';
+                btn.style.color = '#ffffff';
+            }
+        });
+    });
+    </script>
     <?php
     return ob_get_clean();
 });
